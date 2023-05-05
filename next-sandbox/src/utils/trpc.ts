@@ -1,5 +1,6 @@
 import { httpBatchLink } from '@trpc/client';
 import { createTRPCNext } from '@trpc/next';
+import { createTRPCReact } from '@trpc/react-query';
 import type { AppRouter } from '../server/routers/_app';
 
 function getBaseUrl() {
@@ -19,7 +20,9 @@ function getBaseUrl() {
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
 
-export const trpc = createTRPCNext<AppRouter>({
+export const TrpcApp = createTRPCReact<AppRouter>()
+
+export const TrpcPages = createTRPCNext<AppRouter>({
   config(opts) {
     return {
       links: [

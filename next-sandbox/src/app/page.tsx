@@ -1,13 +1,13 @@
 "use client"
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import { trpc } from '../utils/trpc'
+import { TrpcApp } from '../utils/trpc'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Page() {
-  /* const hello = trpc.goodbye.useQuery();
-  console.log(hello.data?.name); */
+  const hello = TrpcApp.goodbye.useQuery();
+  console.log(hello.data?.name);
 
   return (
     <main

@@ -1,11 +1,11 @@
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import { trpc } from '../utils/trpc'
+import { TrpcPages } from '../utils/trpc'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const hello = trpc.goodbye.useQuery();
+  const hello = TrpcPages.goodbye.useQuery();
   console.log(hello.data?.name);
 
   return (
