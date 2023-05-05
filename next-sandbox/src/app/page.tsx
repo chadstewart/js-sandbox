@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Page() {
   const hello = TrpcApp.goodbye.useQuery();
-  console.log(hello.data?.name);
+  if(hello.data) console.log(hello.data);
 
   return (
     <main
