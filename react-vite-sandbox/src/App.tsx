@@ -1,12 +1,29 @@
+import { useQuery, gql } from '@apollo/client';
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+
+  const GET_LOCATIONS = gql`
+    query GetLocations {
+      locations {
+        id
+        name
+        description
+        photo
+      }
+    }
+  `;
+
+  const { loading, error, data } = useQuery(GET_LOCATIONS);
+
+  console.log(data);
+  console.log(loading);
 
   return (
-    <div className="App bg-indigo-500">
+    <div className="App">
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src="/vite.svg" className="logo" alt="Vite logo" />
