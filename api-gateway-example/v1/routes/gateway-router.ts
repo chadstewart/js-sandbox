@@ -1,6 +1,8 @@
 import express from "express";
 const router = express.Router();
 
-router.get("/cat", () => {});
+import getCatImage from "../controllers/cat-controller";
+
+router.get("/cat", getCatImage);
 
 export default router;
