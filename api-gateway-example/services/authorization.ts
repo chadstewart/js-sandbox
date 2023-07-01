@@ -1,3 +1,10 @@
-export default function checkAuthorization (authString: string) {
-  return true;
+import authorizedUsers from "../util/user";
+
+export default function checkAuthorization (userInput: string) {
+  const auth = userInput.slice(6).toLowerCase();
+  //@ts-ignore
+  const isAuthorized = authorizedUsers[auth];
+
+  if(isAuthorized) return true;
+  return false;
 };
