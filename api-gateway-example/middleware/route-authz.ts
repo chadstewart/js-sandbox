@@ -3,7 +3,10 @@ import { auth } from "express-oauth2-jwt-bearer";
 
 export default async function routeAuth (req: Request, res: Response, next: NextFunction) {
   const indexRoute = req.path === "/" && req.method === "GET";
-  if(indexRoute) return next();
+  const authRoute = req.path === "/v1/auth/token";
+  
+  if (indexRoute) return next();
+  if (authRoute) return next();
 
   const checkJwt = auth({
     audience: 'https://api-gateway-fun.com',

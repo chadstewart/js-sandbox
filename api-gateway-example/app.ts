@@ -14,7 +14,9 @@ app.use(routeAuth);
 
 //Initialize Routers
 import v1Router from "./v1/routes/gateway-router";
+import v1AuthRouter from "./v1/routes/authn-router";
 
 //Use Routers
 app.use("/v1/gateway", v1Router);
+app.use("/v1/auth", v1AuthRouter);
 app.get("/", (req, res) => res.send("Hello World!!"));
