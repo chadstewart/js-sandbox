@@ -1,3 +1,5 @@
+// Deprecated: No longer using this for authorization
+
 import authorizedUsers from "../util/user";
 
 export default function checkAuthorization (userInput: string) {

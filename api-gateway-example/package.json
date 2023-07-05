@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
+    "express-oauth2-jwt-bearer": "^1.5.0",
     "zod": "^3.21.4",
     "zod-fetch": "^0.1.1"
   },

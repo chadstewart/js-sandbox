@@ -2,7 +2,7 @@ import express from "express";
 import https from "https";
 import fs from "fs";
 import path from "path";
-import routeAuth from "./middleware/route-auth";
+import routeAuth from "./middleware/route-authz";
 
 export const app = express();
 
