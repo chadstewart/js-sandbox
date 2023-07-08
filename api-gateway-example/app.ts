@@ -3,6 +3,7 @@ import https from "https";
 import fs from "fs";
 import path from "path";
 import routeAuth from "./middleware/route-authz";
+import rateLimit from "./middleware/rate-limit";
 
 export const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json({ limit: "10mb" }));
 
 //Initialize Middlewares
 app.use(routeAuth);
+app.use(rateLimit);
 
 //Initialize Routers
 import v1Router from "./v1/routes/gateway-router";
