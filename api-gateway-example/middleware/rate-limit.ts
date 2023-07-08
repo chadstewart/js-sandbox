@@ -1,19 +1,12 @@
 import { Request, Response, NextFunction } from "express";
+import { rateLimitStore } from "../app";
 
-const REQUESTS_ALLOWED = 1;
+const REQUESTS_ALLOWED = 20;
 const TIME_LIMIT = 60000;
-
-interface RateLimitStore {
-  [key: string]: {
-    timeStamp: number;
-    totalRequests: number;
-  }
-}
 
 export default function rateLimit (req: Request, res: Response, next: NextFunction) {
   const token = req.headers.authorization?.slice(6) as string;
   const currentTimeStamp = Date.now();
-  const rateLimitStore: RateLimitStore = {};
 
   const userIsInRLStore = rateLimitStore[token];
   
@@ -35,8 +28,8 @@ export default function rateLimit (req: Request, res: Response, next: NextFuncti
 
   rateLimitStore[token]["totalRequests"]++;
 
-  const pastRateLimit = rateLimitStore[token]["totalRequests"] > REQUESTS_ALLOWED &&
-                        rateLimitStore[token]["timeStamp"] > currentTimeStamp - TIME_LIMIT;
+  const pastRateLimit = rateLimitStore[token]["timeStamp"] > currentTimeStamp - TIME_LIMIT && 
+                        rateLimitStore[token]["totalRequests"] >= REQUESTS_ALLOWED;
 
   if (pastRateLimit) {
     return res.status(429).json({

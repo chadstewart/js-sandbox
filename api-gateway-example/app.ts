@@ -5,7 +5,15 @@ import path from "path";
 import routeAuth from "./middleware/route-authz";
 import rateLimit from "./middleware/rate-limit";
 
+interface RateLimitStore {
+  [key: string]: {
+    timeStamp: number;
+    totalRequests: number;
+  }
+}
+
 export const app = express();
+export const rateLimitStore: RateLimitStore = {};
 
 //Initialize Request Data Type
 app.use(express.json({ limit: "10mb" }));
