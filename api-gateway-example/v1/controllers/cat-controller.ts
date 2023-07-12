@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import zod from "zod";
 import { createZodFetcher } from "zod-fetch";
 
-export default async function getCatImage (req: Request, res: Response) {
+export default async function getCatImage (req: Request, res: Response, next: NextFunction) {
   const fetchWithZod = createZodFetcher();
 
   try {
@@ -20,12 +20,17 @@ export default async function getCatImage (req: Request, res: Response) {
     
     const catImgUrl = data[0].url;
 
-    return res.status(200).json({
+    const jsonResponseToUser = {
       status: "success",
       data: {
         catImgUrl: catImgUrl
       }
-    });
+    };
+
+    res.locals.responseToUser = jsonResponseToUser;
+    res.status(200).json(jsonResponseToUser);
+
+    return next();
 
   } catch ( error ) {
   
