@@ -13,7 +13,7 @@ export const app = express();
 dotenv.config();
 
 //Initialize Redis
-export const redis = new Redis(`redis://${process.env.REDIS_USERNAME}:${process.env.REDIS_PASSWORD}@redis-15072.c91.us-east-1-3.ec2.cloud.redislabs.com:15072`);
+export const redis = new Redis(`redis://${process.env.REDIS_USERNAME}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_PUBLIC_URL}`);
 
 //Initialize Request Data Type
 app.use(express.json({ limit: "10mb" }));
