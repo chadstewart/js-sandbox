@@ -21,7 +21,7 @@ export default async function getToken (req: Request, res: Response) {
         expires_in: zod.number(),
         token_type: zod.string()
       }),
-      "https://dev-shyos663p2j8yo8b.us.auth0.com/oauth/token",
+      `${process.env.AUTH0_URL}`,
       {
         method: "POST",
         headers: {
