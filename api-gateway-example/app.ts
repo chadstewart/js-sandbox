@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 import { Redis } from "ioredis";
+import { Client } from "pg";
 import routeAuth from "./middleware/route-authz";
 import rateLimit from "./middleware/rate-limit";
 import checkCache from "./middleware/check-cache";
@@ -11,6 +12,18 @@ import addToCache from "./middleware/add-to-cache";
 
 export const app = express();
 dotenv.config();
+
+//Initialize Database
+const client = new Client({
+  user: `${process.env.POSTGRESQL_USER}`,
+  password: `${process.env.POSTGRESQL_PASSWORD}`,
+  database: `${process.env.POSTGRESQL_DATABASE}`
+});
+
+client.connect(error => {
+  if (error) throw error;
+  console.log("Connected to Database!");
+});
 
 //Initialize Redis
 export const redis = new Redis(`redis://${process.env.REDIS_USERNAME}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_PUBLIC_URL}`);
