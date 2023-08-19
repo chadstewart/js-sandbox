@@ -1,7 +1,9 @@
 import { client } from "../services/database";
+import { addPagination } from "../util/pagination-helper";
+import { ROW_LIMIT } from "../util/row-limit";
 
-const ROW_LIMIT = 25;
-
-export const orders = () => {
-  return client.query(`SELECT * FROM orders LIMIT ${ROW_LIMIT};`);
+export const orders = (page = 1) => {
+  const paginatedQuery = addPagination(ROW_LIMIT, page);
+  const databaseQuery = `SELECT * FROM orders${paginatedQuery};`;
+  return client.query(databaseQuery);
 };

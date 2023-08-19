@@ -2,9 +2,20 @@ import { Request, Response, NextFunction } from "express";
 import { orders } from "../../models/orders";
 
 export default async function getOrders (req: Request, res: Response, next: NextFunction) {
-  const data = await orders();
+  let page = 1;
 
-  res.status(200).json({
+  const isPageNumberInRoute = req.params.page;
+  if(isPageNumberInRoute) page = Number(req.params.page);
+
+  const isPageNumberNaN = Number.isNaN(page);
+  if(isPageNumberNaN) return res.status(200).json({
+    status: "failed",
+    error: "order/'id' must be a number"
+  });
+
+  const data = await orders(page);
+
+  return res.status(200).json({
     status: "success",
     data: data
   });
