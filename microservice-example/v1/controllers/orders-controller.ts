@@ -8,9 +8,9 @@ export default async function getOrders (req: Request, res: Response, next: Next
   if(isPageNumberInRoute) page = Number(req.params.page);
 
   const isPageNumberNaN = Number.isNaN(page);
-  if(isPageNumberNaN) return res.status(200).json({
+  if(isPageNumberNaN) return res.status(400).json({
     status: "failed",
-    error: "order/'id' must be a number"
+    error: "orders/'page' must be a number"
   });
 
   const data = await orders(page);
