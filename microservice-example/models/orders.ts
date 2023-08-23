@@ -4,7 +4,13 @@ import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const orders = async (page = 1) => {
   const paginatedQuery = addPagination(page);
-  const databaseQuery = `SELECT * FROM orders${paginatedQuery};`;
+  const databaseQuery =
+  `SELECT
+      order_id,
+      order_date,
+      shipped_date,
+      ship_via
+    FROM orders${paginatedQuery};`;
   const queryData = await client.query(databaseQuery);
   const totalPages = await totalPaginationPages("order_id", "orders");
   const data = {
