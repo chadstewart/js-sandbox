@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { employees } from "../../models/employees";
+import { employeeFromTerritories, employees } from "../../models/employees";
 
 export async function getEmployees (req: Request, res: Response, next: NextFunction) {
   let page = 1;
@@ -14,6 +14,15 @@ export async function getEmployees (req: Request, res: Response, next: NextFunct
   });
 
   const data = await employees(page);
+
+  return res.status(200).json({
+    status: "success",
+    data: data
+  });
+};
+
+export async function getEmployeesByTerritories (req: Request, res: Response, next: NextFunction) {
+  const data = await employeeFromTerritories();
 
   return res.status(200).json({
     status: "success",
