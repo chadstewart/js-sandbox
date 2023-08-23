@@ -26,6 +26,7 @@ export const employeeFromTerritories = async (page = 1, territoryId = 1) => {
   const paginatedQuery = addPagination(page);
   const databaseQuery =
   `Select
+      employee_territories.territory_id,
       employees.employee_id,
       first_name,
       last_name,
@@ -36,15 +37,19 @@ export const employeeFromTerritories = async (page = 1, territoryId = 1) => {
       region_description
     From
       employee_territories
-    LEFT JOIN employees on employees.employee_id=employee_territories.employee_id
-    LEFT JOIN territories on employee_territories.territory_id=territories.territory_id
-    LEFT JOIN region on territories.region_id=region.region_id;`;
-    //${paginatedQuery}
+    LEFT JOIN
+      employees on employees.employee_id=employee_territories.employee_id
+    LEFT JOIN
+      territories on employee_territories.territory_id=territories.territory_id
+    LEFT JOIN
+      region on territories.region_id=region.region_id
+    WHERE employee_territories.territory_id='${territoryId}'
+    ${paginatedQuery};`;
   const queryData = await client.query(databaseQuery);
   const totalPages = await totalPaginationPages("employee_id", "employees");
   const data = {
     ...queryData,
-    //totalPages
+    totalPages
   };
   return data;
 };

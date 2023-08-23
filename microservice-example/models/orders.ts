@@ -31,8 +31,11 @@ export const orderDetails = (orderId = 0) => {
       orders.shipped_date
     FROM
       order_details
-    LEFT JOIN products on order_details.product_id=products.product_id
-    LEFT JOIN orders on order_details.order_id=orders.order_id
-    WHERE order_details.order_id='${orderId}';`;
+    LEFT JOIN
+      products on order_details.product_id=products.product_id
+    LEFT JOIN
+      orders on order_details.order_id=orders.order_id
+    WHERE
+      order_details.order_id='${orderId}';`;
   return client.query(databaseQuery);
 };
