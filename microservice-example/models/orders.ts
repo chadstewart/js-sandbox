@@ -10,7 +10,9 @@ export const orders = async (page = 1) => {
       order_date,
       shipped_date,
       ship_via
-    FROM orders${paginatedQuery};`;
+    FROM
+      orders
+    ${paginatedQuery};`;
   const queryData = await client.query(databaseQuery);
   const totalPages = await totalPaginationPages("order_id", "orders");
   const data = {

@@ -2,7 +2,8 @@ import express from "express";
 const router = express.Router();
 
 import { getOrders, getOrderDetails } from "../controllers/orders-controller";
-import { getEmployees, getEmployeesByTerritories } from "../controllers/employees-controller";
+import { getEmployees } from "../controllers/employees-controller";
+import { getEmployeesByTerritories } from "../controllers/territories-controller";
 
 //Orders
 router.get("/orders/:page?", getOrders);
