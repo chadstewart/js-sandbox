@@ -5,7 +5,7 @@ import { getOrders, getOrderDetails } from "../controllers/orders-controller";
 import { getEmployees } from "../controllers/employees-controller";
 import { getEmployeesByTerritories } from "../controllers/territories-controller";
 import { getProducts, getProductDetails } from "../controllers/products-controller";
-import { getCustomerDetails, getCustomers } from "../controllers/customers-controller";
+import { getCustomerDetails, getCustomers, updateCustomerById } from "../controllers/customers-controller";
 
 //Orders
 router.get("/orders/:page?", getOrders);
@@ -18,6 +18,7 @@ router.get("/products/details/:product_id?", getProductDetails);
 //Customers
 router.get("/customers/:page?", getCustomers);
 router.get("/customers/details/:customer_id?", getCustomerDetails);
+router.put("/customers/:customer_id", updateCustomerById);
 
 //Employees
 router.get("/employees/:page?", getEmployees);
