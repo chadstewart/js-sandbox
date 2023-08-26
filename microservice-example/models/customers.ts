@@ -77,7 +77,6 @@ export const updateCustomer = async (customerId: string, reqBody: any) => {
     `UPDATE
       customers
     SET
-      company_name='${company_name}',
       contact_name='${contact_name}',
       contact_title='${contact_title}',
       address='${address}',
@@ -88,7 +87,7 @@ export const updateCustomer = async (customerId: string, reqBody: any) => {
       phone='${phone}',
       fax='${fax}'
     WHERE
-      customer_id='${customerId}'`;
+      customer_id='${customerId}';`;
     return await client.query(databaseQuery);
   } catch (error) {
     console.log(error);
