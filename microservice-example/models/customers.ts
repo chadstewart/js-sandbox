@@ -1,7 +1,7 @@
-import zod from "zod";
 import { client } from "../services/database";
 import { addPagination } from "../util/pagination-helper";
 import { totalPaginationPages } from "../util/total-pagination-pages";
+import { updateCustomerZodSchema } from "../util/schemas/updateCustomerZodSchema";
 
 export const customers = async (page = 1) => {
   const paginatedQuery = addPagination(page);
@@ -43,22 +43,9 @@ export const customerDetails = async (customerId: string) => {
   return queryData;
 };
 
-export const updateCustomerTableZodSchema = zod.object({
-  company_name: zod.string(),
-  contact_name: zod.string(),
-  contact_title: zod.string(),
-  address: zod.string(),
-  city: zod.string(),
-  region: zod.string(),
-  postal_code: zod.string(),
-  country: zod.string(),
-  phone: zod.string(),
-  fax: zod.string()
-});
-
 export const updateCustomer = async (customerId: string, reqBody: any) => {
   try {
-    await updateCustomerTableZodSchema.parse(reqBody);
+    const updateCustomerSchema = await updateCustomerZodSchema.parse(reqBody);
 
     const {
       company_name,
@@ -71,7 +58,7 @@ export const updateCustomer = async (customerId: string, reqBody: any) => {
       country,
       phone,
       fax
-    } = reqBody;
+    } = updateCustomerSchema;
 
     const databaseQuery =
     `UPDATE

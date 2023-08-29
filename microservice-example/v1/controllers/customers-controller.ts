@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { customers, customerDetails, updateCustomer, updateCustomerTableZodSchema } from "../../models/customers";
+import { customers, customerDetails, updateCustomer } from "../../models/customers";
+import { updateCustomerZodSchema } from "../../util/schemas/updateCustomerZodSchema";
 
 export async function getCustomers (req: Request, res: Response, next: NextFunction) {
   let page = 1;
@@ -54,7 +55,7 @@ export async function updateCustomerById (req: Request, res: Response, next: Nex
   });
 
   try {
-      await updateCustomerTableZodSchema.parse(req.body);
+      await updateCustomerZodSchema.parse(req.body);
       const data = await updateCustomer(customerId, req.body);
 
       const isRowNotUpdated = data.rowCount === 0;
