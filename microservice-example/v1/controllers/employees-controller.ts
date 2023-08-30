@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { employees } from "../../models/employees";
-import { employeeFromTerritories } from "../../models/territories";
+import { createEmployee, employees } from "../../models/employees";
+import { createEmployeeZodSchema } from "../../util/schemas/employeeZodSchema";
 
 export async function getEmployees (req: Request, res: Response, next: NextFunction) {
   let page = 1;
@@ -20,4 +20,23 @@ export async function getEmployees (req: Request, res: Response, next: NextFunct
     status: "success",
     data: data
   });
+};
+
+export async function addEmployee (req: Request, res: Response, next: NextFunction) {
+  try {
+    const addEmployeesReqBody = createEmployeeZodSchema.parse(req.body);
+
+    const data = await createEmployee(addEmployeesReqBody);
+  
+    return res.status(200).json({
+      status: "success",
+      data: data
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "failed",
+      error
+    });
+  }
+
 };

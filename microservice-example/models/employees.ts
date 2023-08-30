@@ -25,7 +25,7 @@ export const employees = async (page = 1) => {
   return data;
 };
 
-export const addEmployee = async (reqBody: any) => {
+export const createEmployee = async (reqBody: any) => {
   try {
     const createEmployeeSchema = await createEmployeeZodSchema.parse(reqBody);
 
