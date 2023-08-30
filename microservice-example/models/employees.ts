@@ -65,11 +65,11 @@ export const createEmployee = async (reqBody: any) => {
     `BEGIN;
     INSERT INTO
       employees (employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path)
-    VALUES (${employeeIdToAdd}, ${last_name}, ${first_name}, ${title}, ${title_of_courtesy}, ${birth_date}, ${hire_date}, ${address}, ${city}, ${region}, ${postal_code}, ${country}, ${home_phone}, ${extension}, ${photo}, ${notes}, ${reports_to}, ${photo_path});
+    VALUES (${employeeIdToAdd}, '${last_name}', '${first_name}', '${title}', '${title_of_courtesy}', '${birth_date}', '${hire_date}', '${address}', '${city}', '${region}', ${postal_code}, '${country}', '${home_phone}', '${extension}', '${photo}', '${notes}', ${reports_to}, '${photo_path}');
     INSERT INTO
       employee_territories (employee_id, territory_id)
     VALUES (${employeeIdToAdd}, ${territory_id});
-    COMMIT;`;
+    END;`;
     const queryData = await client.query(databaseQuery);
     return queryData;
   } catch (error) {
