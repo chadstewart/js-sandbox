@@ -30,7 +30,6 @@ export const createEmployee = async (reqBody: any) => {
     const createEmployeeSchema = await createEmployeeZodSchema.parse(reqBody);
 
     const {
-      employee_id,
       last_name,
       first_name,
       title,
@@ -50,15 +49,26 @@ export const createEmployee = async (reqBody: any) => {
       photo_path,
       territory_id
     } = createEmployeeSchema;
+
+    const mostRecentEmployeeIdQuery = 
+    `SELECT
+      employee_id
+    FROM
+      employees
+    ORDER BY
+      employee_id DESC
+    LIMIT 1;`;
+
+    const employeeIdToAdd = (await client.query(mostRecentEmployeeIdQuery)).rows[0].employee_id + 1;
     
     const databaseQuery = 
     `BEGIN;
     INSERT INTO
       employees (employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path)
-    VALUES (${employee_id}, ${last_name}, ${first_name}, ${title}, ${title_of_courtesy}, ${birth_date}, ${hire_date}, ${address}, ${city}, ${region}, ${postal_code}, ${country}, ${home_phone}, ${extension}, ${photo}, ${notes}, ${reports_to}, ${photo_path});
+    VALUES (${employeeIdToAdd}, ${last_name}, ${first_name}, ${title}, ${title_of_courtesy}, ${birth_date}, ${hire_date}, ${address}, ${city}, ${region}, ${postal_code}, ${country}, ${home_phone}, ${extension}, ${photo}, ${notes}, ${reports_to}, ${photo_path});
     INSERT INTO
       employee_territories (employee_id, territory_id)
-    VALUES (${employee_id}, ${territory_id});
+    VALUES (${employeeIdToAdd}, ${territory_id});
     COMMIT;`;
     const queryData = await client.query(databaseQuery);
     return queryData;

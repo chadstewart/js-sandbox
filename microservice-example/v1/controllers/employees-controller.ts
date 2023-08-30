@@ -38,5 +38,4 @@ export async function addEmployee (req: Request, res: Response, next: NextFuncti
       error
     });
   }
-
 };

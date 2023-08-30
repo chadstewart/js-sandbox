@@ -1,7 +1,6 @@
 import zod from "zod";
 
 export const createEmployeeZodSchema =  zod.object({
-  employee_id: zod.string(),
   last_name: zod.string(),
   first_name: zod.string(),
   title: zod.string(),
