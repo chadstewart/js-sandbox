@@ -41,3 +41,40 @@ export const orderDetails = (orderId = 0) => {
       order_details.order_id='${orderId}';`;
   return client.query(databaseQuery);
 };
+
+export const addOrder = async (reqBody: any) => {
+  const latestCustomerIdsQuery = 
+  `SELECT
+    customer_id
+  FROM
+    customers
+  ORDER BY
+    customer_id DESC
+  LIMIT 1;`;
+
+  const latestOrderIdsQuery = 
+  `SELECT
+    order_id
+  FROM
+    orders
+  ORDER BY
+    order_id DESC
+  LIMIT 1;`;
+
+  const newOrderId = (await client.query(latestOrderIdsQuery)).rows[0].order_id + 1;
+
+  const newCustomerId = (await client.query(latestCustomerIdsQuery)).rows[0].customer_id + 1;
+
+  const databaseQuery = 
+  `BEGIN;
+  INSERT INTO
+    order_details (order_id)
+  VALUES (${newOrderId});
+  INSERT INTO
+    orders (order_id)
+  VALUES (${newOrderId});
+  INSERT INTO
+    customers (customer_id)
+  VALUES (${newCustomerId});
+  END;`;
+};
