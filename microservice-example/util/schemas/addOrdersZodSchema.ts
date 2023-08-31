@@ -17,6 +17,7 @@ export const addOrdersZodSchema = zod.object({
     ship_country: zod.string(),
   }),
   order_details: zod.object({
+    product_id: zod.string(),
     unit_price: zod.string(),
     quantity: zod.string(),
     discount: zod.string(),

@@ -46,6 +46,41 @@ export const orderDetails = (orderId = 0) => {
 export const addOrderNewCustomer = async (reqBody: any) => {
   try {
     const addOrdersSchema = addOrdersZodSchema.parse(reqBody);
+
+    const {
+      orders: {
+        employee_id,
+        order_date,
+        required_date,
+        shipped_date,
+        ship_via,
+        frieght,
+        ship_name,
+        ship_address,
+        ship_city,
+        ship_region,
+        ship_postal_code,
+        ship_country
+      },
+      order_details: {
+        product_id,
+        unit_price,
+        quantity,
+        discount
+      },
+      customers: {
+        company_name,
+        contact_name,
+        contact_title,
+        address,
+        city,
+        region,
+        postal_code,
+        country,
+        phone,
+        fax
+      }
+    } = addOrdersSchema;
     
     const latestCustomerIdsQuery = 
     `SELECT
@@ -89,6 +124,30 @@ export const addOrderNewCustomer = async (reqBody: any) => {
 export const addOrderExistingCustomer = async (reqBody: any) => {
   try {
     const addOrdersSchema = addOrdersZodSchema.parse(reqBody);
+
+    const {
+      orders: {
+        customer_id,
+        employee_id,
+        order_date,
+        required_date,
+        shipped_date,
+        ship_via,
+        frieght,
+        ship_name,
+        ship_address,
+        ship_city,
+        ship_region,
+        ship_postal_code,
+        ship_country
+      },
+      order_details: {
+        product_id,
+        unit_price,
+        quantity,
+        discount
+      }
+    } = addOrdersSchema;
 
     const latestOrderIdsQuery = 
     `SELECT
