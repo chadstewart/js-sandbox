@@ -37,7 +37,6 @@ export const addOrdersNewCustomerZodSchema = zod.object({
 
 export const addOrdersExistingCustomerZodSchema = zod.object({
   orders: zod.object({
-    customer_id: zod.string(),
     employee_id: zod.string(),
     order_date: zod.string(),
     required_date: zod.string(),
@@ -58,5 +57,3 @@ export const addOrdersExistingCustomerZodSchema = zod.object({
     discount: zod.string(),
   })
 });
-
-export const addOrdersNewOrExistingZodSchema = zod.union([addOrdersNewCustomerZodSchema, addOrdersExistingCustomerZodSchema]);

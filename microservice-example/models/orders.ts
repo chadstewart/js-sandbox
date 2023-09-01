@@ -45,12 +45,13 @@ export const orderDetails = async (orderId = 0) => {
     WHERE
       order_details.order_id='${orderId}';`;
 
-  return await client.query(databaseQuery);
+  const data = await client.query(databaseQuery);
+  return data;
 };
 
 export const addOrderNewCustomer = async (reqBody: any) => {
   try {
-    const addOrdersSchema = addOrdersNewCustomerZodSchema.parse(reqBody);
+    const addOrdersSchema = await addOrdersNewCustomerZodSchema.parse(reqBody);
 
     const {
       orders: {
@@ -106,34 +107,33 @@ export const addOrderNewCustomer = async (reqBody: any) => {
     LIMIT 1;`;
   
     const newOrderId = (await client.query(latestOrderIdsQuery)).rows[0].order_id + 1;
-    const newCustomerId = (await client.query(latestCustomerIdsQuery)).rows[0].customer_id + 1;
   
     const databaseQuery = 
     `BEGIN;
     INSERT INTO
-      order_details (order_id, employee_id, order_date, required_date, shipped_date, ship_via, frieght, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
-    VALUES (${newOrderId}, ${employee_id}, ${order_date}, ${required_date}, ${shipped_date}, ${ship_via}, ${frieght}, ${ship_name}, ${ship_address}, ${ship_city}, ${ship_region}, ${ship_postal_code}, ${ship_country});
+      customers (customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax)
+    VALUES ('BLARG', '${company_name}', '${contact_name}', '${contact_title}', '${address}', '${city}', '${region}', '${postal_code}', '${country}', '${phone}', '${fax}');
     INSERT INTO
-      orders (order_id, customer_id, product_id, unit_price, quantity, discount)
-    VALUES (${newOrderId}, ${newCustomerId} ${product_id}, ${unit_price}, ${quantity}, ${discount});
+      orders (order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
+    VALUES (${newOrderId}, 'BLARG', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
     INSERT INTO
-      customers (customer_id company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax)
-    VALUES (${newCustomerId} ${company_name}, ${contact_name}, ${contact_title}, ${address}, ${city}, ${region}, ${postal_code}, ${country}, ${phone}, ${fax});
+      order_details (order_id, product_id, unit_price, quantity, discount)
+    VALUES (${newOrderId}, ${product_id}, ${unit_price}, ${quantity}, ${discount});
     END;`;
 
-    return await client.query(databaseQuery);
+    const data = await client.query(databaseQuery);
+    return data;
   } catch (error) {
     throw error;
   }
 };
 
-export const addOrderExistingCustomer = async (reqBody: any) => {
+export const addOrderExistingCustomer = async (reqBody: any, customer_id: string) => {
   try {
-    const addOrdersSchema = addOrdersExistingCustomerZodSchema.parse(reqBody);
+    const addOrdersSchema = await addOrdersExistingCustomerZodSchema.parse(reqBody);
     
     const {
       orders: {
-        customer_id,
         employee_id,
         order_date,
         required_date,
@@ -169,14 +169,15 @@ export const addOrderExistingCustomer = async (reqBody: any) => {
     const databaseQuery = 
     `BEGIN;
     INSERT INTO
-      order_details (order_id, employee_id, order_date, required_date, shipped_date, ship_via, frieght, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
-    VALUES (${newOrderId}, ${employee_id}, ${order_date}, ${required_date}, ${shipped_date}, ${ship_via}, ${frieght}, ${ship_name}, ${ship_address}, ${ship_city}, ${ship_region}, ${ship_postal_code}, ${ship_country});
+      orders (order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
+    VALUES (${newOrderId}, ${customer_id}, ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
     INSERT INTO
-      orders (order_id, customer_id, product_id, unit_price, quantity, discount)
-    VALUES (${newOrderId}, ${customer_id} ${product_id}, ${unit_price}, ${quantity}, ${discount});
+      order_details (order_id, product_id, unit_price, quantity, discount)
+    VALUES (${newOrderId}, ${product_id}, ${unit_price}, ${quantity}, ${discount});
     END;`;
 
-    return await client.query(databaseQuery);
+    const data = await client.query(databaseQuery);
+    return data;
   } catch (error) {
     throw error;
   }

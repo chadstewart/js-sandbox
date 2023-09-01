@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-import { getOrders, getOrderDetails } from "../controllers/orders-controller";
+import { getOrders, getOrderDetails, addOrderAddNewCustomer } from "../controllers/orders-controller";
 import { addEmployee, getEmployees } from "../controllers/employees-controller";
 import { getEmployeesByTerritories } from "../controllers/territories-controller";
 import { getProducts, getProductDetails } from "../controllers/products-controller";
@@ -11,6 +11,8 @@ import { getUSStates } from "../controllers/us-states-controller";
 //Orders
 router.get("/orders/:page?", getOrders);
 router.get("/orders/details/:order_id?", getOrderDetails);
+router.post("/orders", addOrderAddNewCustomer);
+router.post("/orders/:customer_id", addOrderAddNewCustomer);
 
 //Products
 router.get("/products/:page?", getProducts);

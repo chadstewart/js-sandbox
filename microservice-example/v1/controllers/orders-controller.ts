@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { orders, orderDetails, addOrderExistingCustomer, addOrderNewCustomer } from "../../models/orders";
-import { addOrdersNewCustomerZodSchema, addOrdersNewOrExistingZodSchema } from "../../util/schemas/addOrdersZodSchema";
+import { addOrdersExistingCustomerZodSchema, addOrdersNewCustomerZodSchema } from "../../util/schemas/addOrdersZodSchema";
 
 export async function getOrders (req: Request, res: Response, next: NextFunction) {
   let page = 1;
@@ -50,20 +50,29 @@ export async function getOrderDetails (req: Request, res: Response, next: NextFu
   });
 };
 
-export async function addOrder (req: Request, res: Response, next: NextFunction) {
+export async function addOrderAddNewCustomer (req: Request, res: Response, next: NextFunction) {
   try {
-    const validRequestBody = await addOrdersNewOrExistingZodSchema.parse(req.body);
+    const validRequestBody = await addOrdersNewCustomerZodSchema.parse(req.body);
 
-    let data;
+    const data = addOrderNewCustomer(validRequestBody);
+  
+    return res.status(201).json({
+      status: "success",
+      data: data
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "failed",
+      error
+    });
+  }
+};
 
-    const isCustomerObjectSet = validRequestBody.hasOwnProperty("customers");
+export async function addOrderAddExistingCustomer (req: Request, res: Response, next: NextFunction) {
+  try {
+    const validRequestBody = await addOrdersExistingCustomerZodSchema.parse(req.body);
 
-    if(isCustomerObjectSet) {
-      data = addOrderExistingCustomer(validRequestBody);
-    } else {
-      await addOrdersNewCustomerZodSchema.parse(validRequestBody);
-      data = addOrderNewCustomer(validRequestBody);
-    }
+    const data = addOrderExistingCustomer(validRequestBody, req.params.customer_id);
   
     return res.status(201).json({
       status: "success",
