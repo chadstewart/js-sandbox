@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { orders, orderDetails } from "../../models/orders";
+import { orders, orderDetails, addOrderExistingCustomer, addOrderNewCustomer } from "../../models/orders";
+import { addOrdersZodSchema } from "../../util/schemas/addOrdersZodSchema";
 
 export async function getOrders (req: Request, res: Response, next: NextFunction) {
   let page = 1;
@@ -47,4 +48,30 @@ export async function getOrderDetails (req: Request, res: Response, next: NextFu
     status: "success",
     data: data
   });
+};
+
+export async function addOrder (req: Request, res: Response, next: NextFunction) {
+  try {
+    const validRequestBody = await addOrdersZodSchema.parse(req.body);
+
+    let data;
+
+    const isCustomerObjectSet = validRequestBody.hasOwnProperty("customers");
+
+    if(isCustomerObjectSet) {
+      data = addOrderExistingCustomer(validRequestBody);
+    } else {
+      data = addOrderNewCustomer(validRequestBody);
+    }
+  
+    return res.status(200).json({
+      status: "success",
+      data: data
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "failed",
+      error
+    });
+  }
 };
