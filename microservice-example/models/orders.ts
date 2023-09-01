@@ -1,6 +1,6 @@
 import { client } from "../services/database";
 import { addPagination } from "../util/pagination-helper";
-import { addOrdersZodSchema } from "../util/schemas/addOrdersZodSchema";
+import { addOrdersExistingCustomerZodSchema, addOrdersNewCustomerZodSchema } from "../util/schemas/addOrdersZodSchema";
 import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const orders = async (page = 1) => {
@@ -50,7 +50,7 @@ export const orderDetails = async (orderId = 0) => {
 
 export const addOrderNewCustomer = async (reqBody: any) => {
   try {
-    const addOrdersSchema = addOrdersZodSchema.parse(reqBody);
+    const addOrdersSchema = addOrdersNewCustomerZodSchema.parse(reqBody);
 
     const {
       orders: {
@@ -129,8 +129,8 @@ export const addOrderNewCustomer = async (reqBody: any) => {
 
 export const addOrderExistingCustomer = async (reqBody: any) => {
   try {
-    const addOrdersSchema = addOrdersZodSchema.parse(reqBody);
-
+    const addOrdersSchema = addOrdersExistingCustomerZodSchema.parse(reqBody);
+    
     const {
       orders: {
         customer_id,

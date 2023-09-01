@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { orders, orderDetails, addOrderExistingCustomer, addOrderNewCustomer } from "../../models/orders";
-import { addOrdersZodSchema } from "../../util/schemas/addOrdersZodSchema";
+import { addOrdersNewCustomerZodSchema, addOrdersNewOrExistingZodSchema } from "../../util/schemas/addOrdersZodSchema";
 
 export async function getOrders (req: Request, res: Response, next: NextFunction) {
   let page = 1;
@@ -52,7 +52,7 @@ export async function getOrderDetails (req: Request, res: Response, next: NextFu
 
 export async function addOrder (req: Request, res: Response, next: NextFunction) {
   try {
-    const validRequestBody = await addOrdersZodSchema.parse(req.body);
+    const validRequestBody = await addOrdersNewOrExistingZodSchema.parse(req.body);
 
     let data;
 
@@ -61,10 +61,11 @@ export async function addOrder (req: Request, res: Response, next: NextFunction)
     if(isCustomerObjectSet) {
       data = addOrderExistingCustomer(validRequestBody);
     } else {
+      await addOrdersNewCustomerZodSchema.parse(validRequestBody);
       data = addOrderNewCustomer(validRequestBody);
     }
   
-    return res.status(200).json({
+    return res.status(201).json({
       status: "success",
       data: data
     });

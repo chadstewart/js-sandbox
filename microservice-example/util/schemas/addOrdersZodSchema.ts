@@ -1,8 +1,7 @@
 import zod from "zod";
 
-export const addOrdersZodSchema = zod.object({
+export const addOrdersNewCustomerZodSchema = zod.object({
   orders: zod.object({
-    customer_id: zod.string().optional(),
     employee_id: zod.string(),
     order_date: zod.string(),
     required_date: zod.string(),
@@ -33,5 +32,31 @@ export const addOrdersZodSchema = zod.object({
     country: zod.string(),
     phone: zod.string(),
     fax: zod.string()
-  }).partial()
+  })
 });
+
+export const addOrdersExistingCustomerZodSchema = zod.object({
+  orders: zod.object({
+    customer_id: zod.string(),
+    employee_id: zod.string(),
+    order_date: zod.string(),
+    required_date: zod.string(),
+    shipped_date: zod.string(),
+    ship_via: zod.string(),
+    frieght: zod.string(),
+    ship_name: zod.string(),
+    ship_address: zod.string(),
+    ship_city: zod.string(),
+    ship_region: zod.string(),
+    ship_postal_code: zod.string(),
+    ship_country: zod.string(),
+  }),
+  order_details: zod.object({
+    product_id: zod.string(),
+    unit_price: zod.string(),
+    quantity: zod.string(),
+    discount: zod.string(),
+  })
+});
+
+export const addOrdersNewOrExistingZodSchema = zod.union([addOrdersNewCustomerZodSchema, addOrdersExistingCustomerZodSchema]);
