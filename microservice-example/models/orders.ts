@@ -1,4 +1,5 @@
 import { client } from "../services/database";
+import { generateCustomerId } from "../util/generate-customer-id";
 import { addPagination } from "../util/pagination-helper";
 import { addOrdersExistingCustomerZodSchema, addOrdersNewCustomerZodSchema } from "../util/schemas/addOrdersZodSchema";
 import { totalPaginationPages } from "../util/total-pagination-pages";
@@ -87,15 +88,6 @@ export const addOrderNewCustomer = async (reqBody: any) => {
         fax
       }
     } = addOrdersSchema;
-    
-    const latestCustomerIdsQuery = 
-    `SELECT
-      customer_id
-    FROM
-      customers
-    ORDER BY
-      customer_id DESC
-    LIMIT 1;`;
   
     const latestOrderIdsQuery = 
     `SELECT
@@ -107,15 +99,17 @@ export const addOrderNewCustomer = async (reqBody: any) => {
     LIMIT 1;`;
   
     const newOrderId = (await client.query(latestOrderIdsQuery)).rows[0].order_id + 1;
+
+    const newCustomerId = generateCustomerId(contact_name);
   
     const databaseQuery = 
     `BEGIN;
     INSERT INTO
       customers (customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax)
-    VALUES ('BLARG', '${company_name}', '${contact_name}', '${contact_title}', '${address}', '${city}', '${region}', '${postal_code}', '${country}', '${phone}', '${fax}');
+    VALUES ('${newCustomerId}', '${company_name}', '${contact_name}', '${contact_title}', '${address}', '${city}', '${region}', '${postal_code}', '${country}', '${phone}', '${fax}');
     INSERT INTO
       orders (order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
-    VALUES (${newOrderId}, 'BLARG', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
+    VALUES (${newOrderId}, '${newCustomerId}', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
     INSERT INTO
       order_details (order_id, product_id, unit_price, quantity, discount)
     VALUES (${newOrderId}, ${product_id}, ${unit_price}, ${quantity}, ${discount});
@@ -170,7 +164,7 @@ export const addOrderExistingCustomer = async (reqBody: any, customer_id: string
     `BEGIN;
     INSERT INTO
       orders (order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
-    VALUES (${newOrderId}, ${customer_id}, ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
+    VALUES (${newOrderId}, '${customer_id}', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
     INSERT INTO
       order_details (order_id, product_id, unit_price, quantity, discount)
     VALUES (${newOrderId}, ${product_id}, ${unit_price}, ${quantity}, ${discount});
