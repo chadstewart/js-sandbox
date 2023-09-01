@@ -27,7 +27,7 @@ export const orders = async (page = 1) => {
   return data;
 };
 
-export const orderDetails = (orderId = 0) => {
+export const orderDetails = async (orderId = 0) => {
   const databaseQuery = 
   `SELECT
       order_details.order_id,
@@ -45,7 +45,7 @@ export const orderDetails = (orderId = 0) => {
     WHERE
       order_details.order_id='${orderId}';`;
 
-  return client.query(databaseQuery);
+  return await client.query(databaseQuery);
 };
 
 export const addOrderNewCustomer = async (reqBody: any) => {
@@ -106,7 +106,6 @@ export const addOrderNewCustomer = async (reqBody: any) => {
     LIMIT 1;`;
   
     const newOrderId = (await client.query(latestOrderIdsQuery)).rows[0].order_id + 1;
-  
     const newCustomerId = (await client.query(latestCustomerIdsQuery)).rows[0].customer_id + 1;
   
     const databaseQuery = 
@@ -122,7 +121,7 @@ export const addOrderNewCustomer = async (reqBody: any) => {
     VALUES (${newCustomerId} ${company_name}, ${contact_name}, ${contact_title}, ${address}, ${city}, ${region}, ${postal_code}, ${country}, ${phone}, ${fax});
     END;`;
 
-    return client.query(databaseQuery);
+    return await client.query(databaseQuery);
   } catch (error) {
     throw error;
   }
@@ -170,12 +169,14 @@ export const addOrderExistingCustomer = async (reqBody: any) => {
     const databaseQuery = 
     `BEGIN;
     INSERT INTO
-      order_details (order_id)
-    VALUES (${newOrderId});
+      order_details (order_id, employee_id, order_date, required_date, shipped_date, ship_via, frieght, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
+    VALUES (${newOrderId}, ${employee_id}, ${order_date}, ${required_date}, ${shipped_date}, ${ship_via}, ${frieght}, ${ship_name}, ${ship_address}, ${ship_city}, ${ship_region}, ${ship_postal_code}, ${ship_country});
     INSERT INTO
-      orders (order_id)
-    VALUES (${newOrderId});
+      orders (order_id, customer_id, product_id, unit_price, quantity, discount)
+    VALUES (${newOrderId}, ${customer_id} ${product_id}, ${unit_price}, ${quantity}, ${discount});
     END;`;
+
+    return await client.query(databaseQuery);
   } catch (error) {
     throw error;
   }
