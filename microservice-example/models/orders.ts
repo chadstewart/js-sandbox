@@ -5,6 +5,7 @@ import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const orders = async (page = 1) => {
   const paginatedQuery = addPagination(page);
+  
   const databaseQuery =
   `SELECT
       order_id,
@@ -14,12 +15,15 @@ export const orders = async (page = 1) => {
     FROM
       orders
     ${paginatedQuery};`;
+  
   const queryData = await client.query(databaseQuery);
   const totalPages = await totalPaginationPages("order_id", "orders");
+  
   const data = {
     ...queryData,
     totalPages
   };
+
   return data;
 };
 
@@ -40,6 +44,7 @@ export const orderDetails = (orderId = 0) => {
       orders on order_details.order_id=orders.order_id
     WHERE
       order_details.order_id='${orderId}';`;
+
   return client.query(databaseQuery);
 };
 
@@ -107,15 +112,17 @@ export const addOrderNewCustomer = async (reqBody: any) => {
     const databaseQuery = 
     `BEGIN;
     INSERT INTO
-      order_details (order_id)
-    VALUES (${newOrderId});
+      order_details (order_id, employee_id, order_date, required_date, shipped_date, ship_via, frieght, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
+    VALUES (${newOrderId}, ${employee_id}, ${order_date}, ${required_date}, ${shipped_date}, ${ship_via}, ${frieght}, ${ship_name}, ${ship_address}, ${ship_city}, ${ship_region}, ${ship_postal_code}, ${ship_country});
     INSERT INTO
-      orders (order_id, customer_id)
-    VALUES (${newOrderId}, ${newCustomerId});
+      orders (order_id, customer_id, product_id, unit_price, quantity, discount)
+    VALUES (${newOrderId}, ${newCustomerId} ${product_id}, ${unit_price}, ${quantity}, ${discount});
     INSERT INTO
-      customers (customer_id)
-    VALUES (${newCustomerId});
+      customers (customer_id company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax)
+    VALUES (${newCustomerId} ${company_name}, ${contact_name}, ${contact_title}, ${address}, ${city}, ${region}, ${postal_code}, ${country}, ${phone}, ${fax});
     END;`;
+
+    return client.query(databaseQuery);
   } catch (error) {
     throw error;
   }
