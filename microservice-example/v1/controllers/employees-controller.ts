@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createEmployee, employees } from "../../models/employees";
-import { createEmployeeZodSchema } from "../../util/schemas/employeeZodSchema";
+import { createEmployeeZodSchema } from "../../util/schemas/employee-zod-schema";
 
 export async function getEmployees (req: Request, res: Response, next: NextFunction) {
   let page = 1;

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { customers, customerDetails, updateCustomer } from "../../models/customers";
-import { updateCustomerZodSchema } from "../../util/schemas/updateCustomerZodSchema";
+import { updateCustomerZodSchema } from "../../util/schemas/update-customer-zod-schema";
 
 export async function getCustomers (req: Request, res: Response, next: NextFunction) {
   let page = 1;

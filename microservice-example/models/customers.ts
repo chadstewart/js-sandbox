@@ -1,7 +1,7 @@
 import { client } from "../services/database";
 import { addPagination } from "../util/pagination-helper";
 import { totalPaginationPages } from "../util/total-pagination-pages";
-import { updateCustomerZodSchema } from "../util/schemas/updateCustomerZodSchema";
+import { updateCustomerZodSchema } from "../util/schemas/update-customer-zod-schema";
 
 export const customers = async (page = 1) => {
   const paginatedQuery = addPagination(page);

@@ -1,6 +1,6 @@
 import { client } from "../services/database";
 import { addPagination } from "../util/pagination-helper";
-import { createEmployeeZodSchema } from "../util/schemas/employeeZodSchema";
+import { createEmployeeZodSchema } from "../util/schemas/employee-zod-schema";
 import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const employees = async (page = 1) => {

@@ -1,7 +1,7 @@
 import { client } from "../services/database";
 import { generateCustomerId } from "../util/generate-customer-id";
 import { addPagination } from "../util/pagination-helper";
-import { addOrdersExistingCustomerZodSchema, addOrdersNewCustomerZodSchema } from "../util/schemas/addOrdersZodSchema";
+import { addOrdersExistingCustomerZodSchema, addOrdersNewCustomerZodSchema } from "../util/schemas/add-orders-zod-schema";
 import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const orders = async (page = 1) => {
