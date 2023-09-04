@@ -1,9 +1,7 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/molecule/accordion/accordion"
+import { Accordion } from "@/components/particle/accordion/accordion"
+import { AccordionContent } from "@/components/atom/accordion/content/content"
+import { AccordionItem } from "@/components/atom/accordion/item/item"
+import { AccordionTrigger } from "@/components/atom/accordion/trigger/trigger"
 
 export default function AccordionMolecule () {
   return (
@@ -14,7 +12,7 @@ export default function AccordionMolecule () {
         Yes. It adheres to the WAI-ARIA design pattern.
       </AccordionContent>
     </AccordionItem>
-    <AccordionItem value="item-2" className="bg-neutral-600">
+    <AccordionItem value="item-2">
       <AccordionTrigger>Is it styled?</AccordionTrigger>
       <AccordionContent>
         Yes. It comes with default styles that matches the other
