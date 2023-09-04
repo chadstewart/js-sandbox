@@ -1,14 +1,14 @@
 "use client"
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import { TrpcApp } from '../utils/trpc'
-import AccordionMolecule from '@/components/molecule/accordion'
+//import { TrpcApp } from '../utils/trpc'
+import AccordionMolecule from '../components/molecule/accordion'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Page() {
-  const hello = TrpcApp.goodbye.useQuery();
-  if(hello.data) console.log(hello.data);
+  //const hello = TrpcApp.goodbye.useQuery();
+  //if(hello.data) console.log(hello.data);
 
   return (
     <main

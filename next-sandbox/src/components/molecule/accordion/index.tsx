@@ -1,7 +1,7 @@
-import { Accordion } from "@/components/particle/accordion/accordion"
-import { AccordionContent } from "@/components/atom/accordion/content/content"
-import { AccordionItem } from "@/components/atom/accordion/item/item"
-import { AccordionTrigger } from "@/components/atom/accordion/trigger/trigger"
+import { Accordion } from "../../../components/particle/accordion/accordion"
+import { AccordionContent } from "../../../components/atom/accordion/content/content"
+import { AccordionItem } from "../../..//components/atom/accordion/item/item"
+import { AccordionTrigger } from "../../../components/atom/accordion/trigger/trigger"
 
 export default function AccordionMolecule () {
   return (
