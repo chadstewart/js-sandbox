@@ -1,5 +1,6 @@
 import { Client } from "pg";
 import dotenv from "dotenv";
+import { PrismaClient } from '@prisma/client'
 
 dotenv.config();
 
@@ -15,3 +16,7 @@ export const InitializeDB = () => {
     console.log("Connected to Database!");
   });
 };
+
+export const prisma = new PrismaClient({
+  log: ['query']
+});
