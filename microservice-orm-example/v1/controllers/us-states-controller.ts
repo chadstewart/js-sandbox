@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { usStates, usStatesPrisma } from "../../models/us-states";
+import { usStates } from "../../models/us-states";
 
 export async function getUSStates (req: Request, res: Response, next: NextFunction) {
   let page = 1;
@@ -13,7 +13,7 @@ export async function getUSStates (req: Request, res: Response, next: NextFuncti
     error: "states/'page' must be a number"
   });
 
-  const data = await usStatesPrisma(page);
+  const data = await usStates(page);
 
   return res.status(200).json({
     status: "success",
