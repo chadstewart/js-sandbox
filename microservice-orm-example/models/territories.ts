@@ -1,36 +1,40 @@
-import { client } from "../services/database";
-import { addPagination } from "../util/pagination-helper";
-import { totalPaginationPages } from "../util/total-pagination-pages";
+import { prisma } from "../services/database";
+import { prismaPaginationHelper } from "../util/pagination-helper";
 
 export const employeeFromTerritories = async (page = 1, territoryId = 1) => {
-  const paginatedQuery = addPagination(page);
-  const databaseQuery =
-  `Select
-      employee_territories.territory_id,
-      employees.employee_id,
-      first_name,
-      last_name,
-      title
-      hire_date,
-      photo,
-      territory_description,
-      region_description
-    From
-      employee_territories
-    LEFT JOIN
-      employees on employees.employee_id=employee_territories.employee_id
-    LEFT JOIN
-      territories on employee_territories.territory_id=territories.territory_id
-    LEFT JOIN
-      region on territories.region_id=region.region_id
-    WHERE
-      employee_territories.territory_id='${territoryId}'
-    ${paginatedQuery};`;
-  const queryData = await client.query(databaseQuery);
-  const totalPages = await totalPaginationPages("employee_id", "employees");
+  const { skip, take } = prismaPaginationHelper(page);
+  const query = await prisma.employee_territories.findMany({
+    include: {
+      employees: {
+        select: {
+          employee_id: true,
+          last_name: true,
+          first_name: true,
+          title: true,
+          hire_date: true,
+          photo: true
+        }
+      },
+      territories: {
+        include: {
+          region: {
+            select: {
+              region_description: true
+            }
+          }
+        }
+      }
+    },
+    where: {
+      territory_id: `${territoryId}`
+    },
+    skip,
+    take
+  });
+  const totalRows = await prisma.employees.count();
   const data = {
-    ...queryData,
-    totalPages
+    query,
+    totalRows
   };
   return data;
 };

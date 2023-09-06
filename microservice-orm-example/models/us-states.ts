@@ -13,10 +13,10 @@ export const usStates = async ( page = 1 ) => {
     skip,
     take
   });
-  const num_of_states = await prisma.us_states.count();
+  const totalRows = await prisma.us_states.count();
   const data = {
     queryData,
-    num_of_states
+    totalRows
   };
   return data;
 }
