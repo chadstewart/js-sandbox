@@ -4,26 +4,28 @@ import { prismaPaginationHelper } from "../util/pagination-helper";
 export const employeeFromTerritories = async (page = 1, territoryId = 1) => {
   const { skip, take } = prismaPaginationHelper(page);
   const query = await prisma.employee_territories.findMany({
-    include: {
+    select: {
       employees: {
         select: {
-          employee_id: true,
-          last_name: true,
           first_name: true,
+          last_name: true,
           title: true,
           hire_date: true,
+          notes: true,
+          home_phone: true,
           photo: true
         }
       },
       territories: {
-        include: {
+        select: {
+          territory_description: true,
           region: {
             select: {
               region_description: true
             }
           }
         }
-      }
+      },
     },
     where: {
       territory_id: `${territoryId}`

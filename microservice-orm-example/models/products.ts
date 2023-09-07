@@ -1,22 +1,21 @@
-import { client } from "../services/database";
-import { addPagination } from "../util/pagination-helper";
-import { totalPaginationPages } from "../util/total-pagination-pages";
+import { prisma } from "../services/database";
+import { prismaPaginationHelper } from "../util/pagination-helper";
 
 export const products = async (page = 1) => {
-  const paginatedQuery = addPagination(page);
-  const databaseQuery =
-  `SELECT
-      product_id,
-      product_name,
-      unit_price,
-      units_in_stock,
-      units_on_order,
-      discontinued
-    FROM
-      products
-    ${paginatedQuery};`;
-  const queryData = await client.query(databaseQuery);
-  const totalPages = await totalPaginationPages("product_id", "products");
+  const { skip, take } = prismaPaginationHelper(page);
+  const queryData = prisma.products.findMany({
+    select: {
+      product_id: true,
+      product_name: true,
+      unit_price: true,
+      units_in_stock: true,
+      units_on_order: true,
+      discontinued: true
+    },
+    skip,
+    take
+  });
+  const totalPages = prisma.products.count();    
   const data = {
     ...queryData,
     totalPages
@@ -25,27 +24,30 @@ export const products = async (page = 1) => {
 };
 
 export const productDetails = async (productId = 1) => {
-  const databaseQuery =
-  `Select
-      suppliers.supplier_id,
-      categories.category_id,
-      products.product_id,
-      product_name,
-      unit_price,
-      category_name,
-      description,
-      company_name,
-      contact_name,
-      contact_title,
-      homepage    
-    From
-      products
-    LEFT JOIN
-      categories on products.category_id=categories.category_id
-    LEFT JOIN
-      suppliers on products.supplier_id=suppliers.supplier_id
-    WHERE
-      products.product_id='${productId}';`;
-  const queryData = await client.query(databaseQuery);
+  const queryData = prisma.products.findMany({
+    select: {
+      product_name: true,
+      unit_price: true,
+      discontinued: true,
+      categories: {
+        select: {
+          category_name: true,
+          description: true
+        }
+      },
+      suppliers: {
+        select: {
+          company_name: true,
+          contact_name: true,
+          contact_title: true,
+          phone: true,
+          homepage: true
+        }
+      }
+    },
+    where: {
+      product_id: productId
+    }
+  });
   return queryData;
 };
