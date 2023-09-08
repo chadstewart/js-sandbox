@@ -3,7 +3,7 @@ import { prismaPaginationHelper } from "../util/pagination-helper";
 
 export const products = async (page = 1) => {
   const { skip, take } = prismaPaginationHelper(page);
-  const queryData = prisma.products.findMany({
+  const queryData = await prisma.products.findMany({
     select: {
       product_id: true,
       product_name: true,
@@ -15,7 +15,7 @@ export const products = async (page = 1) => {
     skip,
     take
   });
-  const totalPages = prisma.products.count();    
+  const totalPages = await prisma.products.count();    
   const data = {
     ...queryData,
     totalPages
@@ -24,7 +24,7 @@ export const products = async (page = 1) => {
 };
 
 export const productDetails = async (productId = 1) => {
-  const queryData = prisma.products.findMany({
+  const queryData = await prisma.products.findMany({
     select: {
       product_name: true,
       unit_price: true,

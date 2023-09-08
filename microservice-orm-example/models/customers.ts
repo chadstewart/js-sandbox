@@ -1,10 +1,10 @@
-import { client, prisma } from "../services/database";
+import { prisma } from "../services/database";
 import { prismaPaginationHelper } from "../util/pagination-helper";
 import { updateCustomerZodSchema } from "../util/schemas/update-customer-zod-schema";
 
 export const customers = async (page = 1) => {
   const { skip, take } = prismaPaginationHelper(page);
-  const queryData = prisma.customers.findMany({
+  const queryData = await prisma.customers.findMany({
     select: {
       customer_id: true,
       company_name: true,
@@ -23,7 +23,7 @@ export const customers = async (page = 1) => {
 };
 
 export const customerDetails = async (customerId: string) => {
-  const queryData = prisma.customers.findMany({
+  const queryData = await prisma.customers.findMany({
     select: {
       customer_id: true,
       company_name: true,
@@ -47,7 +47,6 @@ export const updateCustomer = async (customerId: string, reqBody: any) => {
     const updateCustomerSchema = await updateCustomerZodSchema.parse(reqBody);
 
     const {
-      company_name,
       contact_name,
       contact_title,
       address,
@@ -59,22 +58,23 @@ export const updateCustomer = async (customerId: string, reqBody: any) => {
       fax
     } = updateCustomerSchema;
 
-    const databaseQuery =
-    `UPDATE
-      customers
-    SET
-      contact_name='${contact_name}',
-      contact_title='${contact_title}',
-      address='${address}',
-      city='${city}',
-      region='${region}',
-      postal_code='${postal_code}',
-      country='${country}',
-      phone='${phone}',
-      fax='${fax}'
-    WHERE
-      customer_id='${customerId}';`;
-    return await client.query(databaseQuery);
+    const queryData = await prisma.customers.update({
+      where: {
+        customer_id: customerId
+      },
+      data: {
+        contact_name,
+        contact_title,
+        address,
+        city,
+        region,
+        postal_code,
+        country,
+        phone,
+        fax
+      }
+    });
+    return queryData;
   } catch (error) {
     console.log(error);
     throw error;
