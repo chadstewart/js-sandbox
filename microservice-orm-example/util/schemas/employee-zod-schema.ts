@@ -14,9 +14,9 @@ export const createEmployeeZodSchema =  zod.object({
   country: zod.string(),
   home_phone: zod.string(),
   extension: zod.string(),
-  photo: zod.string(),
+  photo: zod.any(),
   notes: zod.string(),
-  reports_to: zod.string(),
+  reports_to: zod.number(),
   photo_path: zod.string(),
   territory_id: zod.string()
 });
