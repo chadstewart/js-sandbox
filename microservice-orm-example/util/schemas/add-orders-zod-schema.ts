@@ -37,12 +37,12 @@ export const addOrdersNewCustomerZodSchema = zod.object({
 
 export const addOrdersExistingCustomerZodSchema = zod.object({
   orders: zod.object({
-    employee_id: zod.string(),
+    employee_id: zod.number(),
     order_date: zod.string(),
     required_date: zod.string(),
     shipped_date: zod.string(),
-    ship_via: zod.string(),
-    freight: zod.string(),
+    ship_via: zod.number(),
+    freight: zod.number(),
     ship_name: zod.string(),
     ship_address: zod.string(),
     ship_city: zod.string(),

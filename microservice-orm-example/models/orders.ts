@@ -181,29 +181,49 @@ export const addOrderExistingCustomer = async (reqBody: any, customer_id: string
       }
     } = addOrdersSchema;
 
-    const latestOrderIdsQuery = 
-    `SELECT
-      order_id
-    FROM
-      orders
-    ORDER BY
-      order_id DESC
-    LIMIT 1;`;
-  
-    const newOrderId = (await client.query(latestOrderIdsQuery)).rows[0].order_id + 1;
-  
-    const databaseQuery = 
-    `BEGIN;
-    INSERT INTO
-      orders (order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
-    VALUES (${newOrderId}, '${customer_id}', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${freight}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
-    INSERT INTO
-      order_details (order_id, product_id, unit_price, quantity, discount)
-    VALUES (${newOrderId}, ${product_id}, ${unit_price}, ${quantity}, ${discount});
-    END;`;
+    const latestOrderIdsQuery = await prisma.orders.findMany({
+      select: {
+        order_id: true,
+      },
+      orderBy: {
+        order_id: "desc"
+      },
+      take: 1
+    });
 
-    const data = await client.query(databaseQuery);
-    return data;
+    const newOrderId = latestOrderIdsQuery[0].order_id + 1;
+  
+    const queryData = await prisma.$transaction([
+      prisma.orders.create({
+        data: {
+          order_id: newOrderId,
+          customer_id,
+          employee_id,
+          order_date,
+          required_date,
+          shipped_date,
+          ship_via,
+          freight,
+          ship_name,
+          ship_address,
+          ship_city,
+          ship_region,
+          ship_postal_code,
+          ship_country  
+        }
+      }),
+      prisma.order_details.create({
+        data: {
+          order_id: newOrderId,
+          product_id,
+          unit_price,
+          quantity,
+          discount
+        }
+      })
+    ]);
+
+    return queryData;
   } catch (error) {
     throw error;
   }
