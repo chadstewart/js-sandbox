@@ -1,24 +1,23 @@
-import { client } from "../services/database";
+import { client, prisma } from "../services/database";
 import { generateCustomerId } from "../util/generate-customer-id";
-import { addPagination } from "../util/pagination-helper";
+import { addPagination, prismaPaginationHelper } from "../util/pagination-helper";
 import { addOrdersExistingCustomerZodSchema, addOrdersNewCustomerZodSchema } from "../util/schemas/add-orders-zod-schema";
 import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const orders = async (page = 1) => {
-  const paginatedQuery = addPagination(page);
-  
-  const databaseQuery =
-  `SELECT
-      order_id,
-      order_date,
-      shipped_date,
-      ship_via
-    FROM
-      orders
-    ${paginatedQuery};`;
-  
-  const queryData = await client.query(databaseQuery);
-  const totalPages = await totalPaginationPages("order_id", "orders");
+  const { skip, take } = prismaPaginationHelper(page);
+  const queryData = await prisma.orders.findMany({
+    select: {
+      order_id: true,
+      order_date: true,
+      shipped_date: true,
+      ship_via: true
+    },
+    skip,
+    take
+  });
+
+  const totalPages = await prisma.orders.count();
   
   const data = {
     ...queryData,
