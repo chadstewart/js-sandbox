@@ -1,8 +1,7 @@
 import { client, prisma } from "../services/database";
 import { generateCustomerId } from "../util/generate-customer-id";
-import { addPagination, prismaPaginationHelper } from "../util/pagination-helper";
+import { prismaPaginationHelper } from "../util/pagination-helper";
 import { addOrdersExistingCustomerZodSchema, addOrdersNewCustomerZodSchema } from "../util/schemas/add-orders-zod-schema";
-import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const orders = async (page = 1) => {
   const { skip, take } = prismaPaginationHelper(page);
@@ -28,25 +27,28 @@ export const orders = async (page = 1) => {
 };
 
 export const orderDetails = async (orderId = 0) => {
-  const databaseQuery = 
-  `SELECT
-      order_details.order_id,
-      products.product_name,
-      order_details.unit_price,
-      order_details.quantity,
-      orders.order_date,
-      orders.shipped_date
-    FROM
-      order_details
-    LEFT JOIN
-      products on order_details.product_id=products.product_id
-    LEFT JOIN
-      orders on order_details.order_id=orders.order_id
-    WHERE
-      order_details.order_id='${orderId}';`;
-
-  const data = await client.query(databaseQuery);
-  return data;
+  const queryData = await prisma.order_details.findMany({
+    select: {
+      order_id: true,
+      products: {
+        select: {
+          product_id: true
+        }
+      },
+      unit_price: true,
+      quantity: true,
+      orders: {
+        select: {
+          order_date: true,
+          shipped_date: true
+        }
+      }
+    },
+    where: {
+      order_id: orderId
+    }
+  });
+  return queryData;
 };
 
 export const addOrderNewCustomer = async (reqBody: any) => {
