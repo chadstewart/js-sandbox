@@ -1,4 +1,4 @@
-import { client, prisma } from "../services/database";
+import { prisma } from "../services/database";
 import { generateCustomerId } from "../util/generate-customer-id";
 import { prismaPaginationHelper } from "../util/pagination-helper";
 import { addOrdersExistingCustomerZodSchema, addOrdersNewCustomerZodSchema } from "../util/schemas/add-orders-zod-schema";

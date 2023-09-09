@@ -3,13 +3,9 @@ import https from "https";
 import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
-import { InitializeDB } from "./services/database";
 
 export const app = express();
 dotenv.config();
-
-//Initialize Database
-InitializeDB();
 
 //Initialize Request Data Type
 app.use(express.json({ limit: "10mb" }));
