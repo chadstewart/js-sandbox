@@ -62,7 +62,7 @@ export const addOrderNewCustomer = async (reqBody: any) => {
         required_date,
         shipped_date,
         ship_via,
-        frieght,
+        freight,
         ship_name,
         ship_address,
         ship_city,
@@ -90,34 +90,65 @@ export const addOrderNewCustomer = async (reqBody: any) => {
       }
     } = addOrdersSchema;
   
-    const latestOrderIdsQuery = 
-    `SELECT
-      order_id
-    FROM
-      orders
-    ORDER BY
-      order_id DESC
-    LIMIT 1;`;
+    const latestOrderIdsQuery = await prisma.orders.findMany({
+      select: {
+        order_id: true
+      },
+      orderBy: {
+        order_id: "desc"
+      },
+      take: 1
+    });
   
-    const newOrderId = (await client.query(latestOrderIdsQuery)).rows[0].order_id + 1;
+    const newOrderId = latestOrderIdsQuery[0].order_id + 1;
 
     const newCustomerId = generateCustomerId(contact_name);
-  
-    const databaseQuery = 
-    `BEGIN;
-    INSERT INTO
-      customers (customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax)
-    VALUES ('${newCustomerId}', '${company_name}', '${contact_name}', '${contact_title}', '${address}', '${city}', '${region}', '${postal_code}', '${country}', '${phone}', '${fax}');
-    INSERT INTO
-      orders (order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
-    VALUES (${newOrderId}, '${newCustomerId}', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
-    INSERT INTO
-      order_details (order_id, product_id, unit_price, quantity, discount)
-    VALUES (${newOrderId}, ${product_id}, ${unit_price}, ${quantity}, ${discount});
-    END;`;
+    
+    const queryData = await prisma.$transaction([
+      prisma.customers.create({
+        data: {
+          customer_id: newCustomerId,
+          company_name,
+          contact_name,
+          contact_title,
+          address,
+          city,
+          region,
+          postal_code,
+          country,
+          phone
+        }
+      }),
+      prisma.orders.create({
+        data: {
+          order_id: newOrderId,
+          customer_id: newCustomerId,
+          employee_id,
+          order_date,
+          required_date,
+          shipped_date,
+          ship_via,
+          freight,
+          ship_name,
+          ship_address,
+          ship_city,
+          ship_region,
+          ship_postal_code,
+          ship_country
+        }
+      }),
+      prisma.order_details.create({
+        data: {
+          order_id: newOrderId,
+          product_id,
+          unit_price,
+          quantity,
+          discount
+        }
+      })
+    ]);
 
-    const data = await client.query(databaseQuery);
-    return data;
+    return queryData;
   } catch (error) {
     throw error;
   }
@@ -134,7 +165,7 @@ export const addOrderExistingCustomer = async (reqBody: any, customer_id: string
         required_date,
         shipped_date,
         ship_via,
-        frieght,
+        freight,
         ship_name,
         ship_address,
         ship_city,
@@ -165,7 +196,7 @@ export const addOrderExistingCustomer = async (reqBody: any, customer_id: string
     `BEGIN;
     INSERT INTO
       orders (order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
-    VALUES (${newOrderId}, '${customer_id}', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
+    VALUES (${newOrderId}, '${customer_id}', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${freight}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
     INSERT INTO
       order_details (order_id, product_id, unit_price, quantity, discount)
     VALUES (${newOrderId}, ${product_id}, ${unit_price}, ${quantity}, ${discount});

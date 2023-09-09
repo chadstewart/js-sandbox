@@ -7,7 +7,7 @@ export const addOrdersNewCustomerZodSchema = zod.object({
     required_date:  zod.union([zod.string(), zod.date()]).transform(val => new Date(val)),
     shipped_date:  zod.union([zod.string(), zod.date()]).transform(val => new Date(val)),
     ship_via: zod.number(),
-    frieght: zod.number(),
+    freight: zod.number(),
     ship_name: zod.string(),
     ship_address: zod.string(),
     ship_city: zod.string(),
@@ -17,9 +17,9 @@ export const addOrdersNewCustomerZodSchema = zod.object({
   }),
   order_details: zod.object({
     product_id: zod.number(),
-    unit_price: zod.string(),
-    quantity: zod.string(),
-    discount: zod.string(),
+    unit_price: zod.number(),
+    quantity: zod.number(),
+    discount: zod.number(),
   }),
   customers: zod.object({
     company_name: zod.string(),
@@ -42,7 +42,7 @@ export const addOrdersExistingCustomerZodSchema = zod.object({
     required_date: zod.string(),
     shipped_date: zod.string(),
     ship_via: zod.string(),
-    frieght: zod.string(),
+    freight: zod.string(),
     ship_name: zod.string(),
     ship_address: zod.string(),
     ship_city: zod.string(),
@@ -51,9 +51,9 @@ export const addOrdersExistingCustomerZodSchema = zod.object({
     ship_country: zod.string(),
   }),
   order_details: zod.object({
-    product_id: zod.string(),
-    unit_price: zod.string(),
-    quantity: zod.string(),
-    discount: zod.string(),
+    product_id: zod.number(),
+    unit_price: zod.number(),
+    quantity: zod.number(),
+    discount: zod.number(),
   })
 });
