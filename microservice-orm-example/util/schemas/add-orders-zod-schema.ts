@@ -38,9 +38,9 @@ export const addOrdersNewCustomerZodSchema = zod.object({
 export const addOrdersExistingCustomerZodSchema = zod.object({
   orders: zod.object({
     employee_id: zod.number(),
-    order_date: zod.string(),
-    required_date: zod.string(),
-    shipped_date: zod.string(),
+    order_date: zod.union([zod.string(), zod.date()]).transform(val => new Date(val)),
+    required_date: zod.union([zod.string(), zod.date()]).transform(val => new Date(val)),
+    shipped_date: zod.union([zod.string(), zod.date()]).transform(val => new Date(val)),
     ship_via: zod.number(),
     freight: zod.number(),
     ship_name: zod.string(),
