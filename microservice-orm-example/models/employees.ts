@@ -54,8 +54,7 @@ export const createEmployee = async (reqBody: any) => {
       },
       orderBy: {
         employee_id: "desc"
-      },
-      take: 1
+      }
     });
 
     const employeeIdToAdd = mostRecentEmployeeIdQuery[0].employee_id + 1;
