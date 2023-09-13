@@ -1,19 +1,28 @@
-import express from "express";
 import https from "https";
 import fs from "fs";
 import path from "path";
-import dotenv from "dotenv";
+import { ApolloServer } from "@apollo/server";
 
-export const app = express();
-dotenv.config();
+const typeDefs = `#graphql
+  type Book {
+    title: String
+    author: String
+  }
 
-//Initialize Request Data Type
-app.use(express.json({ limit: "10mb" }));
+  type Query {
+    book: Book
+  }
+`;
 
-//Initialize Routers
-import v1Router from "./v1/routes/router";
+const book = { title: "hello", author: "world" }
 
-//Use Routers
-app.use("/v1/", v1Router);
+const resolvers = {
+  Query: {
+    book: () => book,
+  },
+};
 
-app.get("/", (req, res) => res.send("Hello World!!"));
+export const server = new ApolloServer({
+  typeDefs,
+  resolvers
+});
