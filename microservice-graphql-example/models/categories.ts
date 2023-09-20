@@ -12,5 +12,6 @@ export const categories = async ( page = 1 ) => {
     queryData,
     totalRows
   };
+  console.log(data);
   return data;
 }

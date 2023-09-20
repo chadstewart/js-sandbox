@@ -16,7 +16,7 @@ export const customers = async (page = 1) => {
   });
   const totalPages = prisma.customers.count();
   const data = {
-    ...queryData,
+    queryData,
     totalPages
   };
   return data;
@@ -39,6 +39,7 @@ export const customerDetails = async (customerId: string) => {
       customer_id: customerId
     }
   });
+  console.log(customerId)
   return queryData;
 };
 

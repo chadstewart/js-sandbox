@@ -1,15 +1,4 @@
 export const typeDefs = `#graphql
-  type Book {
-    title: String
-    author: String
-  }
-
-  type Query {
-    book: Book
-  }
-`;
-
-const databaseTypeDefs = `#graphql
   type Order {
     order_id: ID!
     customer_id: ID!
@@ -103,13 +92,13 @@ const databaseTypeDefs = `#graphql
   }
 
   type Query {
-    getOrders(page: Int!): [Order]
-    getOrderDetails(id: ID!): Order
-    getShipppers(page: Int!): [Shipper]
-    getEmployees(page: Int!): [Employee]
-    getCustomers(page: Int!): [Customer]
-    getProducts(page: Int!): [Produt]
-    getCategories(page: Int!): [Category]
-    getSuppliers(page: Int!): [Supplier]
+    getOrders(page: Int): [Order]
+    getShipppers(page: Int): [Shipper]
+    getEmployees(page: Int): [Employee]
+    getCustomers(page: Int): [Customer]
+    getCustomerDetails(id: ID!): [Customer]
+    getProducts(page: Int): [Product]
+    getCategories(page: Int): [Category]
+    getSuppliers(page: Int): [Supplier]
   }
 `

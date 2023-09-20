@@ -19,7 +19,7 @@ export const orders = async (page = 1) => {
   const totalPages = await prisma.orders.count();
   
   const data = {
-    ...queryData,
+    queryData,
     totalPages
   };
 
@@ -48,6 +48,7 @@ export const orderDetails = async (orderId = 0) => {
       order_id: orderId
     }
   });
+  console.log(queryData)
   return queryData;
 };
 
