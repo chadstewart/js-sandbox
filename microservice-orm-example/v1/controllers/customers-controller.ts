@@ -57,12 +57,6 @@ export async function updateCustomerById (req: Request, res: Response, next: Nex
   try {
       await updateCustomerZodSchema.parse(req.body);
       const data = await updateCustomer(customerId, req.body);
-
-      const isRowNotUpdated = data.rowCount === 0;
-      if(isRowNotUpdated) return res.status(404).json({
-        status: "failed",
-        error: "No row was found with that customer_id"
-      });
     
       return res.status(204).json({
         status: "success",

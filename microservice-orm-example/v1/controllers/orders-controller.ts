@@ -36,14 +36,6 @@ export async function getOrderDetails (req: Request, res: Response, next: NextFu
 
   const data = await orderDetails(orderId);
 
-  const isRowsEmpty = data.rowCount === 0;
-  if(isRowsEmpty) return res.status(200).json({
-    status: "success",
-    data: {
-      message: "No rows were found"
-    }
-  });
-
   return res.status(200).json({
     status: "success",
     data: data
