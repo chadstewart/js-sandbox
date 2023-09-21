@@ -16,6 +16,15 @@ export const typeDefs = `#graphql
     ship_country: String
   }
 
+  type OrderDetail {
+    order_id: ID!
+    product_id: ID!
+    unit_price: Int
+    quantity: Int
+    discount: Int
+    order: [Order]
+  }
+
   type Shipper {
     shipper_id: ID!
     company_name: String
@@ -93,6 +102,7 @@ export const typeDefs = `#graphql
 
   type Query {
     getOrders(page: Int): [Order]
+    getOrderDetails(page: Int): [OrderDetail]
     getShipppers(page: Int): [Shipper]
     getEmployees(page: Int): [Employee]
     getCustomers(page: Int): [Customer]
@@ -101,4 +111,4 @@ export const typeDefs = `#graphql
     getCategories(page: Int): [Category]
     getSuppliers(page: Int): [Supplier]
   }
-`
+`;

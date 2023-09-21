@@ -39,7 +39,6 @@ export const customerDetails = async (customerId: string) => {
       customer_id: customerId
     }
   });
-  console.log(customerId)
   return queryData;
 };
 

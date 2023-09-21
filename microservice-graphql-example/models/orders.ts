@@ -48,9 +48,32 @@ export const orderDetails = async (orderId = 0) => {
       order_id: orderId
     }
   });
-  console.log(queryData)
   return queryData;
 };
+
+export const orderDetailsGraphQL = async (page = 1) => {
+  const { skip, take } = prismaPaginationHelper(page);
+  const queryData = await prisma.order_details.findMany({
+    select: {
+      order_id: true,
+      unit_price: true,
+      quantity: true,
+      discount: true
+    },
+    skip,
+    take
+  });
+  return queryData;
+};
+
+export const ordersGraphQL = async (orderId = 0) => {
+  const queryData = await prisma.orders.findMany({
+    where: {
+      order_id: orderId
+    }
+  });
+  return queryData;
+}
 
 export const addOrderNewCustomer = async (reqBody: any) => {
   try {
