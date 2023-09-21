@@ -23,6 +23,15 @@ export const products = async (page = 1) => {
   return data;
 };
 
+export const productDetailsGraphQL = async (productId = 1) => {
+  const queryData = await prisma.products.findMany({
+    where: {
+      product_id: productId
+    }
+  });
+  return queryData;
+};
+
 export const productDetails = async (productId = 1) => {
   const queryData = await prisma.products.findMany({
     select: {

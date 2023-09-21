@@ -23,6 +23,7 @@ export const typeDefs = `#graphql
     quantity: Int
     discount: Int
     order: [Order]
+    product: [Product]
   }
 
   type Shipper {

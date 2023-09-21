@@ -2,7 +2,7 @@ import { categories } from "../../models/categories";
 import { customerDetails, customers } from "../../models/customers";
 import { employees } from "../../models/employees";
 import { orderDetailsGraphQL, orders, ordersGraphQL } from "../../models/orders";
-import { products } from "../../models/products";
+import { productDetailsGraphQL, products } from "../../models/products";
 import { supplier } from "../../models/suppliers";
 
 interface QueryPageArgs {
@@ -21,6 +21,7 @@ export const resolvers = {
     getSuppliers: async (_: any, args: QueryPageArgs) => await supplier(args.page)
   },
   OrderDetail: {
-    order: async (parent: { order_id: number }) => await ordersGraphQL(parent.order_id)
+    order: async (parent: { order_id: number }) => await ordersGraphQL(parent.order_id),
+    product: async (parent: { product_id: number }) => await productDetailsGraphQL(parent.product_id)
   },
 };
