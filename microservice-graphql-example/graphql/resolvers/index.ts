@@ -1,27 +1,33 @@
 import { categories } from "../../models/categories";
 import { customerDetails, customers } from "../../models/customers";
-import { employees } from "../../models/employees";
+import { employees, employeesFromIdGraphQL } from "../../models/employees";
 import { orderDetailsGraphQL, orders, ordersGraphQL } from "../../models/orders";
 import { productDetailsGraphQL, products } from "../../models/products";
 import { supplier } from "../../models/suppliers";
+import { employeeTerritoriesGraphQL, territoriesGraphQL } from "../../models/territories";
 
-interface QueryPageArgs {
+interface QueryPaginationArgs {
   page: number
 }
 
 export const resolvers = {
   Query: {
-    getOrders: async (_: any, args: QueryPageArgs) => (await orders(args.page)).queryData,
+    getOrders: async (_: any, args: QueryPaginationArgs) => (await orders(args.page)).queryData,
     getOrderDetails: async (_: any, args: { page: number }) => await orderDetailsGraphQL(args.page),
-    getEmployees: async (_: any, args: QueryPageArgs) => (await employees(args.page)).queryData,
-    getCustomers: async (_: any, args: QueryPageArgs) => (await customers(args.page)).queryData,
+    getEmployees: async (_: any, args: QueryPaginationArgs) => (await employees(args.page)).queryData,
+    getCustomers: async (_: any, args: QueryPaginationArgs) => (await customers(args.page)).queryData,
     getCustomerDetails: async (_: any, args: { id: string }) => await customerDetails(args.id),
-    getProducts: async (_: any, args: QueryPageArgs) => (await products(args.page)).queryData,
-    getCategories: async (_: any, args: QueryPageArgs) => (await categories(args.page)).queryData,
-    getSuppliers: async (_: any, args: QueryPageArgs) => await supplier(args.page)
+    getProducts: async (_: any, args: QueryPaginationArgs) => (await products(args.page)).queryData,
+    getCategories: async (_: any, args: QueryPaginationArgs) => (await categories(args.page)).queryData,
+    getSuppliers: async (_: any, args: QueryPaginationArgs) => await supplier(args.page),
+    getEmployeeTerritories: async (_: any, args: QueryPaginationArgs) => (await employeeTerritoriesGraphQL(args.page)).queryData
   },
   OrderDetail: {
     order: async (parent: { order_id: number }) => await ordersGraphQL(parent.order_id),
     product: async (parent: { product_id: number }) => await productDetailsGraphQL(parent.product_id)
   },
+  EmployeeTerritory: {
+    employee: async(parent: { employee_id: number }) => (await employeesFromIdGraphQL(parent.employee_id)).queryData,
+    territory: async(parent: { territory_id: number }) => (await territoriesGraphQL(parent.territory_id)).queryData
+  }
 };

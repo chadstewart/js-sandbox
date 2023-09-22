@@ -23,6 +23,30 @@ export const employees = async (page = 1) => {
   return data;
 };
 
+export const employeesFromIdGraphQL = async (page = 1, employeeId = 1) => {
+  const { skip, take } = prismaPaginationHelper(page);
+  const queryData = await prisma.employees.findMany({
+    select: {
+      employee_id: true,
+      first_name: true,
+      last_name: true,
+      title: true,
+      photo: true
+    },
+    where: {
+      employee_id: employeeId
+    },
+    skip,
+    take
+  });
+  const totalPages = await prisma.employees.count();
+  const data = {
+    queryData,
+    totalPages
+  };
+  return data;
+};
+
 export const createEmployee = async (reqBody: any) => {
   try {
     const createEmployeeSchema = await createEmployeeZodSchema.parse(reqBody);

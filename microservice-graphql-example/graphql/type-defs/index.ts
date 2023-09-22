@@ -101,6 +101,18 @@ export const typeDefs = `#graphql
     homepage: String
   }
 
+  type EmployeeTerritory {
+    employee_id: ID!
+    territory_id: ID!
+    employee: [Employee]
+    territory: [Territory]
+  }
+
+  type Territory {
+    territory_id: ID!
+    description: String
+  }
+
   type Query {
     getOrders(page: Int): [Order]
     getOrderDetails(page: Int): [OrderDetail]
@@ -111,5 +123,6 @@ export const typeDefs = `#graphql
     getProducts(page: Int): [Product]
     getCategories(page: Int): [Category]
     getSuppliers(page: Int): [Supplier]
+    getEmployeeTerritories(page: Int): [EmployeeTerritory]
   }
 `;
