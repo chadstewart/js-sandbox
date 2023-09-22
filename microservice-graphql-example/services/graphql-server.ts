@@ -1,12 +1,26 @@
-import { server } from "../app";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { httpServer, server } from "../app";
+import { app } from "../app";
+import { expressMiddleware } from "@apollo/server/express4";
+import { json } from "body-parser";
+import cors from "cors";
+
+const PORT = 4000;
 
 const startServer = async () => {
-    const { url } = await startStandaloneServer(server, {
-        listen: { port: 4000 }
-    });
+    await server.start();
+
+    app.use(
+      '/',
+      cors<cors.CorsRequest>(),
+      json(),
+      expressMiddleware(server, {
+        context: async ({ req }) => ({ token: req.headers.token }),
+      }),
+    );
+
+    await new Promise<void>((resolve) => httpServer.listen({ port: PORT }, resolve));
     
-    console.log(`🚀  Server ready at: ${url}`);
+    console.log(`🚀  Server ready at: http://localhost:4000/`);
 };
 
 startServer();
