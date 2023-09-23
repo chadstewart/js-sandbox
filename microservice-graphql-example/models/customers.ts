@@ -42,6 +42,15 @@ export const customerDetails = async (customerId: string) => {
   return queryData;
 };
 
+export const customerDetailsGraphQL = async (customerId: string) => {
+  const queryData = await prisma.customers.findMany({
+    where: {
+      customer_id: customerId
+    }
+  });
+  return queryData;
+};
+
 export const updateCustomer = async (customerId: string, reqBody: any) => {
   try {
     const updateCustomerSchema = await updateCustomerZodSchema.parse(reqBody);

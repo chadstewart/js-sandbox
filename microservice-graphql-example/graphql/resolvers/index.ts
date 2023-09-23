@@ -1,5 +1,5 @@
 import { categories, categoriesGraphQL } from "../../models/categories";
-import { customerDetails, customers } from "../../models/customers";
+import { customerDetails, customerDetailsGraphQL, customers } from "../../models/customers";
 import { employees, employeesFromIdGraphQL } from "../../models/employees";
 import { orderDetailsGraphQL, orders, ordersGraphQL } from "../../models/orders";
 import { productDetailsGraphQL, products } from "../../models/products";
@@ -22,6 +22,10 @@ export const resolvers = {
     getCategories: async (_: any, args: QueryPaginationArgs) => (await categories(args.page)).queryData,
     getSuppliers: async (_: any, args: QueryPaginationArgs) => await supplier(args.page),
     getEmployeeTerritories: async (_: any, args: QueryPaginationArgs) => (await employeeTerritoriesGraphQL(args.page)).queryData
+  },
+  Order: {
+    customer: async (parent: { customer_id: string }) => await customerDetailsGraphQL(parent.customer_id),
+    employee: async (parent: { employee_id: number }) => await employeesFromIdGraphQL(parent.employee_id)
   },
   OrderDetail: {
     order: async (parent: { order_id: number }) => await ordersGraphQL(parent.order_id),

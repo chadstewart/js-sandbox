@@ -14,6 +14,8 @@ export const typeDefs = `#graphql
     ship_region: String
     ship_postal_code: String
     ship_country: String
+    customer: [Customer]
+    employee: [Employee]
   }
 
   type OrderDetail {
