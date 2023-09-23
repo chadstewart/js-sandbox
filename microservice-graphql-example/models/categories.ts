@@ -13,4 +13,13 @@ export const categories = async ( page = 1 ) => {
     totalRows
   };
   return data;
-}
+};
+
+export const categoriesGraphQL = async ( categoryId = 1 ) => {
+  const queryData = await prisma.categories.findMany({
+    where: {
+      category_id: categoryId
+    }
+  });
+  return queryData;
+};

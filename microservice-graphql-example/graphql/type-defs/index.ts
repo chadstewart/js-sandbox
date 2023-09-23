@@ -77,6 +77,8 @@ export const typeDefs = `#graphql
     units_on_order: Int
     reorder_level: String
     discontinued: String
+    supplier: [Supplier]
+    category: [Category]
   }
 
   type Category {
@@ -110,6 +112,13 @@ export const typeDefs = `#graphql
 
   type Territory {
     territory_id: ID!
+    description: String
+    region_id: ID
+    region: [Region]
+  }
+
+  type Region {
+    region_id: ID!
     description: String
   }
 

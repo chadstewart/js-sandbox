@@ -13,4 +13,13 @@ export const supplier = async ( page = 1 ) => {
     totalRows
   };
   return data;
+};
+
+export const supplierGraphQL = async ( suppierId = 1 ) => {
+  const queryData = await prisma.suppliers.findMany({
+    where: {
+      supplier_id: suppierId
+    }
+  });
+  return queryData;
 }

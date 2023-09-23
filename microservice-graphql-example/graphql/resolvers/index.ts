@@ -1,9 +1,10 @@
-import { categories } from "../../models/categories";
+import { categories, categoriesGraphQL } from "../../models/categories";
 import { customerDetails, customers } from "../../models/customers";
 import { employees, employeesFromIdGraphQL } from "../../models/employees";
 import { orderDetailsGraphQL, orders, ordersGraphQL } from "../../models/orders";
 import { productDetailsGraphQL, products } from "../../models/products";
-import { supplier } from "../../models/suppliers";
+import { regionsGraphQL } from "../../models/region";
+import { supplier, supplierGraphQL } from "../../models/suppliers";
 import { employeeTerritoriesGraphQL, territoriesGraphQL } from "../../models/territories";
 
 interface QueryPaginationArgs {
@@ -27,7 +28,14 @@ export const resolvers = {
     product: async (parent: { product_id: number }) => await productDetailsGraphQL(parent.product_id)
   },
   EmployeeTerritory: {
-    employee: async(parent: { employee_id: number }) => (await employeesFromIdGraphQL(parent.employee_id)).queryData,
-    territory: async(parent: { territory_id: number }) => (await territoriesGraphQL(parent.territory_id)).queryData
+    employee: async (parent: { employee_id: number }) => (await employeesFromIdGraphQL(parent.employee_id)).queryData,
+    territory: async (parent: { territory_id: number }) => (await territoriesGraphQL(parent.territory_id)).queryData
+  },
+  Product: {
+    supplier: async (parent: { supplier_id: number }) => await supplierGraphQL(parent.supplier_id),
+    category: async (parent: { category_id: number }) => await categoriesGraphQL(parent.category_id)
+  },
+  Territory: {
+    region: async (parent: { region_id: number }) => await regionsGraphQL(parent.region_id)
   }
 };
