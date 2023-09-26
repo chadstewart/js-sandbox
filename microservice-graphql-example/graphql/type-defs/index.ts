@@ -124,6 +124,18 @@ export const typeDefs = `#graphql
     description: String
   }
 
+  input CustomerUserInput {
+    contact_name: String
+    contact_title: String
+    address: String
+    city: String
+    region: String
+    postal_code: String
+    country: String
+    phone: String
+    fax: String
+  }
+
   type Query {
     getOrders(page: Int): [Order]
     getOrderDetails(page: Int): [OrderDetail]
@@ -135,5 +147,9 @@ export const typeDefs = `#graphql
     getCategories(page: Int): [Category]
     getSuppliers(page: Int): [Supplier]
     getEmployeeTerritories(page: Int): [EmployeeTerritory]
+  }
+
+  type Mutation {
+    updateCustomer(id: ID!, customerUserInput: CustomerUserInput): String
   }
 `;
