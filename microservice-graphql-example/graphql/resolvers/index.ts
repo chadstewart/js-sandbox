@@ -1,14 +1,20 @@
 import { categories, categoriesGraphQL } from "../../models/categories";
-import { customerDetails, customerDetailsGraphQL, customers } from "../../models/customers";
+import { customerDetails, customerDetailsGraphQL, customers, updateCustomer } from "../../models/customers";
 import { employees, employeesFromIdGraphQL } from "../../models/employees";
 import { orderDetailsGraphQL, orders, ordersGraphQL } from "../../models/orders";
 import { productDetailsGraphQL, products } from "../../models/products";
 import { regionsGraphQL } from "../../models/region";
 import { supplier, supplierGraphQL } from "../../models/suppliers";
 import { employeeTerritoriesGraphQL, territoriesGraphQL } from "../../models/territories";
+import { updateCustomerZodSchema } from "../../util/schemas/update-customer-zod-schema";
 
 interface QueryPaginationArgs {
   page: number
+}
+
+interface CustomerMutationArgs {
+  id: string
+  reqBody: typeof updateCustomerZodSchema
 }
 
 export const resolvers = {
@@ -41,5 +47,15 @@ export const resolvers = {
   },
   Territory: {
     region: async (parent: { region_id: number }) => await regionsGraphQL(parent.region_id)
+  },
+  Mutation: {
+    updateCustomer: async (_: any, args: CustomerMutationArgs) => {
+      try {
+        updateCustomerZodSchema.parse(args.reqBody);
+        return await updateCustomer(args.id, args.reqBody)
+      } catch {
+        return "Ohh shucks"
+      }
+    }
   }
 };
