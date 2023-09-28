@@ -14,7 +14,7 @@ interface QueryPaginationArgs {
 
 interface CustomerMutationArgs {
   id: string
-  reqBody: typeof updateCustomerZodSchema
+  customerUserInput: typeof updateCustomerZodSchema
 }
 
 export const resolvers = {
@@ -50,12 +50,8 @@ export const resolvers = {
   },
   Mutation: {
     updateCustomer: async (_: any, args: CustomerMutationArgs) => {
-      try {
-        updateCustomerZodSchema.parse(args.reqBody);
-        return await updateCustomer(args.id, args.reqBody)
-      } catch {
-        return "Ohh shucks"
-      }
+      await updateCustomer(args.id, args.customerUserInput);
+      return await customerDetails(args.id);
     }
   }
 };

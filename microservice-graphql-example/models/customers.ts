@@ -1,4 +1,5 @@
 import { prisma } from "../services/database";
+import { removeUndefinedValuesFromObject } from "../util/remove-undefined-attributes";
 import { prismaPaginationHelper } from "../util/pagination-helper";
 import { updateCustomerZodSchema } from "../util/schemas/update-customer-zod-schema";
 
@@ -53,34 +54,14 @@ export const customerDetailsGraphQL = async (customerId: string) => {
 
 export const updateCustomer = async (customerId: string, reqBody: any) => {
   try {
-    const updateCustomerSchema = await updateCustomerZodSchema.parse(reqBody);
-
-    const {
-      contact_name,
-      contact_title,
-      address,
-      city,
-      region,
-      postal_code,
-      country,
-      phone,
-      fax
-    } = updateCustomerSchema;
+    const updateCustomerSchema = removeUndefinedValuesFromObject(await updateCustomerZodSchema.parse(reqBody));
 
     const queryData = await prisma.customers.update({
       where: {
         customer_id: customerId
       },
       data: {
-        contact_name,
-        contact_title,
-        address,
-        city,
-        region,
-        postal_code,
-        country,
-        phone,
-        fax
+        ...updateCustomerSchema
       }
     });
     return queryData;
