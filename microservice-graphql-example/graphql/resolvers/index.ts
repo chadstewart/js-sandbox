@@ -49,9 +49,6 @@ export const resolvers = {
     region: async (parent: { region_id: number }) => await regionsGraphQL(parent.region_id)
   },
   Mutation: {
-    updateCustomer: async (_: any, args: CustomerMutationArgs) => {
-      await updateCustomer(args.id, args.customerUserInput);
-      return await customerDetails(args.id);
-    }
+    updateCustomer: async (_: any, args: CustomerMutationArgs) => await updateCustomer(args.id, args.customerUserInput)
   }
 };
