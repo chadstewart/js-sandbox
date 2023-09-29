@@ -136,6 +136,27 @@ export const typeDefs = `#graphql
     fax: String
   }
 
+  input CreateEmployeeInput {
+    last_name: String!
+    first_name: String!
+    title: String!
+    title_of_courtesy: String!
+    birth_date: String!
+    hire_date: String!
+    address: String!
+    city: String!
+    region: String!
+    postal_code: String!
+    country: String!
+    home_phone: String!
+    extension: String!
+    photo: String!
+    notes: String!
+    reports_to: Int!
+    photo_path: String!
+    territory_id: ID!
+  }
+
   type Query {
     getOrders(page: Int): [Order]
     getOrderDetails(page: Int): [OrderDetail]
@@ -151,5 +172,6 @@ export const typeDefs = `#graphql
 
   type Mutation {
     updateCustomer(id: ID!, customerUserInput: CustomerUserInput): [Customer]
+    createEmployee(createEmployeeInput: CreateEmployeeInput): [Employee]
   }
 `;

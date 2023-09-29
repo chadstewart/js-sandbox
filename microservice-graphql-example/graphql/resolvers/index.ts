@@ -1,11 +1,12 @@
 import { categories, categoriesGraphQL } from "../../models/categories";
 import { customerDetails, customerDetailsGraphQL, customers, updateCustomer } from "../../models/customers";
-import { employees, employeesFromIdGraphQL } from "../../models/employees";
+import { createEmployee, employees, employeesFromIdGraphQL } from "../../models/employees";
 import { orderDetailsGraphQL, orders, ordersGraphQL } from "../../models/orders";
 import { productDetailsGraphQL, products } from "../../models/products";
 import { regionsGraphQL } from "../../models/region";
 import { supplier, supplierGraphQL } from "../../models/suppliers";
 import { employeeTerritoriesGraphQL, territoriesGraphQL } from "../../models/territories";
+import { createEmployeeZodSchema } from "../../util/schemas/employee-zod-schema";
 import { updateCustomerZodSchema } from "../../util/schemas/update-customer-zod-schema";
 
 interface QueryPaginationArgs {
@@ -15,6 +16,10 @@ interface QueryPaginationArgs {
 interface CustomerMutationArgs {
   id: string
   customerUserInput: typeof updateCustomerZodSchema
+}
+
+interface CreateEmployeeMutationArgs {
+  createEmployeeInput: typeof createEmployeeZodSchema
 }
 
 export const resolvers = {
@@ -49,6 +54,7 @@ export const resolvers = {
     region: async (parent: { region_id: number }) => await regionsGraphQL(parent.region_id)
   },
   Mutation: {
-    updateCustomer: async (_: any, args: CustomerMutationArgs) => await updateCustomer(args.id, args.customerUserInput)
+    updateCustomer: async (_: any, args: CustomerMutationArgs) => await updateCustomer(args.id, args.customerUserInput),
+    createEmployee: async (_: any, args: CreateEmployeeMutationArgs) => await createEmployee(args.createEmployeeInput)
   }
 };
