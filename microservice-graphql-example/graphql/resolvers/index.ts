@@ -6,6 +6,7 @@ import { productDetailsGraphQL, products } from "../../models/products";
 import { regionsGraphQL } from "../../models/region";
 import { supplier, supplierGraphQL } from "../../models/suppliers";
 import { employeeTerritoriesGraphQL, territoriesGraphQL } from "../../models/territories";
+import { testPerformance } from "../../util/performance-test";
 import { createEmployeeZodSchema } from "../../util/schemas/employee-zod-schema";
 import { updateCustomerZodSchema } from "../../util/schemas/update-customer-zod-schema";
 
@@ -22,13 +23,22 @@ interface CreateEmployeeMutationArgs {
   createEmployeeInput: typeof createEmployeeZodSchema
 }
 
+interface ResolverContext {
+  currentTime: Date
+}
+
+const checkResolverPerformance = async (currentTime: Date, resolverCallback: Function) => {
+  await resolverCallback();
+  console.log(testPerformance(currentTime));
+}
+
 export const resolvers = {
   Query: {
     getOrders: async (_: any, args: QueryPaginationArgs) => (await orders(args.page)).queryData,
-    getOrderDetails: async (_: any, args: { page: number }) => await orderDetailsGraphQL(args.page),
+    getOrderDetails: async (_: any, args: QueryPaginationArgs) => await orderDetailsGraphQL(args.page),
     getEmployees: async (_: any, args: QueryPaginationArgs) => (await employees(args.page)).queryData,
     getCustomers: async (_: any, args: QueryPaginationArgs) => (await customers(args.page)).queryData,
-    getCustomerDetails: async (_: any, args: { id: string }) => await customerDetails(args.id),
+    getCustomerDetails: async (_: any, args: { id: string }, context: ResolverContext) => checkResolverPerformance(context.currentTime, () => customerDetails(args.id)),
     getProducts: async (_: any, args: QueryPaginationArgs) => (await products(args.page)).queryData,
     getCategories: async (_: any, args: QueryPaginationArgs) => (await categories(args.page)).queryData,
     getSuppliers: async (_: any, args: QueryPaginationArgs) => await supplier(args.page),

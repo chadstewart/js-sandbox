@@ -1,19 +1,19 @@
 import http from "http";
-import { app } from "../app";
-import { expressMiddleware } from "@apollo/server/express4";
 import { json } from "body-parser";
 import cors from "cors";
+import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import { app } from "../app";
 import { typeDefs } from "../graphql/type-defs";
 import { resolvers } from "../graphql/resolvers";
+import { testPerformance } from "../util/performance-test";
 
 const PORT = 4000;
 
 interface MyContext {
   token?: string;
 };
-
 
 const startServer = async () => {
   const httpServer = http.createServer(app);
@@ -31,7 +31,12 @@ const startServer = async () => {
     cors<cors.CorsRequest>(),
     json(),
     expressMiddleware(server, {
-      context: async ({ req }) => ({ token: req.headers.token })
+      context: async ({ req }) => {
+        let currentTime;
+        const isNotIntrospectionQuery = req.body.operationName !== "IntrospectionQuery";
+        if(isNotIntrospectionQuery) currentTime = testPerformance();
+        return ({ token: req.headers.token, currentTime })
+      },
     }),
   );
 
