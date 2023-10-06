@@ -8,17 +8,23 @@ export async function getProducts (req: Request, res: Response, next: NextFuncti
   if(isPageNumberInRoute) page = Number(req.params.page);
 
   const isPageNumberNaN = Number.isNaN(page);
-  if(isPageNumberNaN) return res.status(400).json({
-    status: "failed",
-    error: "products/'page' must be a number"
-  });
+  if(isPageNumberNaN) {
+    res.status(400).json({
+      status: "failed",
+      error: "products/'page' must be a number"
+    });
+
+    return next();
+  }
 
   const data = await products(page);
 
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     data: data
   });
+
+  return next();
 };
 
 export async function getProductDetails (req: Request, res: Response, next: NextFunction) {
@@ -28,15 +34,21 @@ export async function getProductDetails (req: Request, res: Response, next: Next
   if(isProductIdInRoute) productId = Number(req.params.product_id);
 
   const isProductIdNaN = Number.isNaN(productId);
-  if(isProductIdNaN) return res.status(400).json({
-    status: "failed",
-    error: "products/details/'product_id' must be a number"
-  });
+  if(isProductIdNaN) {
+    res.status(400).json({
+      status: "failed",
+      error: "products/details/'product_id' must be a number"
+    });
+
+    return next();
+  }
 
   const data = await productDetails(productId);
 
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     data: data
   });
+
+  return next();
 };

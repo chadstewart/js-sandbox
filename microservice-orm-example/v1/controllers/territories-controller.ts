@@ -9,24 +9,34 @@ export async function getEmployeesByTerritories (req: Request, res: Response, ne
   if(isPageNumberInRoute) page = Number(req.params.page);
 
   const isPageNumberNaN = Number.isNaN(page);
-  if(isPageNumberNaN) return res.status(400).json({
-    status: "failed",
-    error: "territories/employees/'page' must be a number"
-  });
+  if(isPageNumberNaN) {
+    res.status(400).json({
+      status: "failed",
+      error: "territories/employees/'page' must be a number"
+    });
+
+    return next();
+  }
 
   const isTerritoryIdInRoute = req.params.territory_id;
   if(isTerritoryIdInRoute) territoryId = Number(req.params.territory_id);
 
   const isTerritoryIdNaN = Number.isNaN(territoryId);
-  if(isTerritoryIdNaN) return res.status(400).json({
-    status: "failed",
-    error: "territories/employees/'territory_id' must be a number"
-  });
+  if(isTerritoryIdNaN) {
+    res.status(400).json({
+      status: "failed",
+      error: "territories/employees/'territory_id' must be a number"
+    });
+
+    return next();
+  }
 
   const data = await employeeFromTerritories(page, territoryId);
 
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     data: data
   });
+
+  return next();
 };

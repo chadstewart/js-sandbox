@@ -8,15 +8,21 @@ export async function getUSStates (req: Request, res: Response, next: NextFuncti
   if(isPageNumberInRoute) page = Number(req.params.page);
 
   const isPageNumberNaN = Number.isNaN(page);
-  if(isPageNumberNaN) return res.status(400).json({
-    status: "failed",
-    error: "states/'page' must be a number"
-  });
+  if(isPageNumberNaN) {
+    res.status(400).json({
+      status: "failed",
+      error: "states/'page' must be a number"
+    });
+
+    return next();
+  }
 
   const data = await usStates(page);
 
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     data: data
   });
+
+  return next();
 };

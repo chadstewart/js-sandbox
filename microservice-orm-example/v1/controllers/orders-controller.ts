@@ -9,17 +9,23 @@ export async function getOrders (req: Request, res: Response, next: NextFunction
   if(isPageNumberInRoute) page = Number(req.params.page);
 
   const isPageNumberNaN = Number.isNaN(page);
-  if(isPageNumberNaN) return res.status(400).json({
-    status: "failed",
-    error: "orders/'page' must be a number"
-  });
+  if(isPageNumberNaN) {
+    res.status(400).json({
+      status: "failed",
+      error: "orders/'page' must be a number"
+    });
+
+    return next();
+  }
 
   const data = await orders(page);
 
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     data: data
   });
+
+  return next();
 };
 
 export async function getOrderDetails (req: Request, res: Response, next: NextFunction) {
@@ -29,17 +35,23 @@ export async function getOrderDetails (req: Request, res: Response, next: NextFu
   if(isOrderIdInRoute) orderId = Number(req.params.order_id);
 
   const isOrderIdNaN = Number.isNaN(orderId);
-  if(isOrderIdNaN) return res.status(400).json({
-    status: "failed",
-    error: "orders/'order_id' must be a number"
-  });
+  if(isOrderIdNaN) {
+    res.status(400).json({
+      status: "failed",
+      error: "orders/'order_id' must be a number"
+    });
+
+    return next();
+  }
 
   const data = await orderDetails(orderId);
 
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     data: data
   });
+
+  return next();
 };
 
 export async function addOrderAddNewCustomer (req: Request, res: Response, next: NextFunction) {
@@ -48,15 +60,19 @@ export async function addOrderAddNewCustomer (req: Request, res: Response, next:
 
     const data = addOrderNewCustomer(validRequestBody);
   
-    return res.status(201).json({
+    res.status(201).json({
       status: "success",
       data: data
     });
+
+    return next();
   } catch (error) {
-    return res.status(400).json({
+    res.status(400).json({
       status: "failed",
       error
     });
+
+    return next();
   }
 };
 
@@ -66,14 +82,18 @@ export async function addOrderAddExistingCustomer (req: Request, res: Response, 
 
     const data = addOrderExistingCustomer(validRequestBody, req.params.customer_id);
   
-    return res.status(201).json({
+    res.status(201).json({
       status: "success",
       data: data
     });
+
+    return next();
   } catch (error) {
-    return res.status(400).json({
+    res.status(400).json({
       status: "failed",
       error
     });
+
+    return next();
   }
 };

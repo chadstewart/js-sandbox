@@ -4,15 +4,10 @@ import logger from "../services/logger";
 export default function serverLogger (req: Request, res: Response) {
     const { rawHeaders, httpVersion, method, body, url, params } = req;
     const headers = res.getHeaders();
-    const { statusCode, locals: serverResponse } = res;
+    const { statusCode, locals: { totalRequestTime } } = res;
 
     logger.info(JSON.stringify({
-        rawHeaders,
-        httpVersion,
-        url,
-        method,
-        params,
-        body
+        test: "test"
     }));
 
     const isStatusCodeIn200Range = 200 <= statusCode && statusCode < 300;
@@ -21,13 +16,13 @@ export default function serverLogger (req: Request, res: Response) {
         logger.info(JSON.stringify({
             headers,
             statusCode,
-            serverResponse
+            body,
+            requestTime: `${totalRequestTime} ms`
         }));
     } else {
         logger.warn(JSON.stringify({
             headers,
-            statusCode,
-            serverResponse
+            statusCode
         }));
     }
 };

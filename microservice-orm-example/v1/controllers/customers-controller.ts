@@ -9,17 +9,23 @@ export async function getCustomers (req: Request, res: Response, next: NextFunct
   if(isPageNumberInRoute) page = Number(req.params.page);
 
   const isPageNumberNaN = Number.isNaN(page);
-  if(isPageNumberNaN) return res.status(400).json({
-    status: "failed",
-    error: "customers/'page' must be a number"
-  });
+  if(isPageNumberNaN) {
+    res.status(400).json({
+      status: "failed",
+      error: "customers/'page' must be a number"
+    });
+
+    return next();
+  }
 
   const data = await customers(page);
 
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     data: data
   });
+
+  return next();
 };
 
 export async function getCustomerDetails (req: Request, res: Response, next: NextFunction) {
@@ -29,17 +35,23 @@ export async function getCustomerDetails (req: Request, res: Response, next: Nex
   if(isCustomerIdInRoute) customerId = req.params.customer_id;
 
   const isCustomerIdNotAValue = customerId.length === 0;
-  if(isCustomerIdNotAValue) return res.status(400).json({
-    status: "failed",
-    error: "customers/'customerId' must have a value"
-  });
+  if(isCustomerIdNotAValue) {
+    res.status(400).json({
+      status: "failed",
+      error: "customers/'customerId' must have a value"
+    });
+
+    return next();
+  }
 
   const data = await customerDetails(customerId);
 
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     data: data
   });
+
+  return next();
 };
 
 export async function updateCustomerById (req: Request, res: Response, next: NextFunction) {
@@ -58,14 +70,18 @@ export async function updateCustomerById (req: Request, res: Response, next: Nex
       await updateCustomerZodSchema.parse(req.body);
       const data = await updateCustomer(customerId, req.body);
     
-      return res.status(204).json({
+      res.status(204).json({
         status: "success",
         data: data
       });
+
+      return next();
   } catch (error) {
-    return res.status(400).json({
+    res.status(400).json({
       status: "failed",
       error
     });
+
+    return next();
   }
 };

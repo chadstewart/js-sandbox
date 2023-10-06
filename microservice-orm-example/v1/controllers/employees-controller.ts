@@ -9,17 +9,23 @@ export async function getEmployees (req: Request, res: Response, next: NextFunct
   if(isPageNumberInRoute) page = Number(req.params.page);
 
   const isPageNumberNaN = Number.isNaN(page);
-  if(isPageNumberNaN) return res.status(400).json({
-    status: "failed",
-    error: "employees/'page' must be a number"
-  });
+  if(isPageNumberNaN) {
+    res.status(400).json({
+      status: "failed",
+      error: "employees/'page' must be a number"
+    });
+
+    return next();
+  }
 
   const data = await employees(page);
 
-  return res.status(200).json({
+  res.status(200).json({
     status: "success",
     data: data
   });
+
+  return next();
 };
 
 export async function addEmployee (req: Request, res: Response, next: NextFunction) {
@@ -28,14 +34,18 @@ export async function addEmployee (req: Request, res: Response, next: NextFuncti
 
     const data = await createEmployee(addEmployeesReqBody);
   
-    return res.status(200).json({
+    res.status(200).json({
       status: "success",
       data: data
     });
+
+    return next();
   } catch (error) {
-    return res.status(400).json({
+    res.status(400).json({
       status: "failed",
       error
     });
+
+    return next();
   }
 };
