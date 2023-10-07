@@ -5,7 +5,7 @@ import { addOrdersExistingCustomerZodSchema, addOrdersNewCustomerZodSchema } fro
 import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const orders = async (page = 1) => {
-  const paginatedQuery = addPagination(page);
+  const { inputtedRowLimit, offsetForQuery } = addPagination(page);
   
   const databaseQuery =
   `SELECT
@@ -15,9 +15,9 @@ export const orders = async (page = 1) => {
       ship_via
     FROM
       orders
-    ${paginatedQuery};`;
-  
-  const queryData = await client.query(databaseQuery);
+    LIMIT $1 OFFSET $2;`;
+  const databaseQueryValues = [inputtedRowLimit, offsetForQuery];
+  const queryData = await client.query(databaseQuery, databaseQueryValues);
   const totalPages = await totalPaginationPages("order_id", "orders");
   
   const data = {
@@ -44,9 +44,9 @@ export const orderDetails = async (orderId = 0) => {
     LEFT JOIN
       orders on order_details.order_id=orders.order_id
     WHERE
-      order_details.order_id='${orderId}';`;
+      order_details.order_id=$1;`;
 
-  const data = await client.query(databaseQuery);
+  const data = await client.query(databaseQuery, [orderId]);
   return data;
 };
 
@@ -106,14 +106,46 @@ export const addOrderNewCustomer = async (reqBody: any) => {
     `BEGIN;
     INSERT INTO
       customers (customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax)
-    VALUES ('${newCustomerId}', '${company_name}', '${contact_name}', '${contact_title}', '${address}', '${city}', '${region}', '${postal_code}', '${country}', '${phone}', '${fax}');
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);
     INSERT INTO
       orders (order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
-    VALUES (${newOrderId}, '${newCustomerId}', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
+    VALUES ($12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25);
     INSERT INTO
       order_details (order_id, product_id, unit_price, quantity, discount)
-    VALUES (${newOrderId}, ${product_id}, ${unit_price}, ${quantity}, ${discount});
+    VALUES ($26, $27, $28, $29, $30);
     END;`;
+    const databaseQueryValues = [
+      newCustomerId,
+      company_name,
+      contact_name,
+      contact_title,
+      address,
+      city,
+      region,
+      postal_code,
+      country,
+      phone,
+      fax,
+      newCustomerId,
+      newOrderId,
+      employee_id,
+      order_date,
+      required_date,
+      shipped_date,
+      ship_via,
+      frieght,
+      ship_name,
+      ship_address,
+      ship_city,
+      ship_region,
+      ship_postal_code,
+      ship_country,
+      newOrderId,
+      product_id,
+      unit_price,
+      quantity,
+      discount
+    ];
 
     const data = await client.query(databaseQuery);
     return data;
@@ -164,13 +196,34 @@ export const addOrderExistingCustomer = async (reqBody: any, customer_id: string
     `BEGIN;
     INSERT INTO
       orders (order_id, customer_id, employee_id, order_date, required_date, shipped_date, ship_via, freight, ship_name, ship_address, ship_city, ship_region, ship_postal_code, ship_country)
-    VALUES (${newOrderId}, '${customer_id}', ${employee_id}, '${order_date}', '${required_date}', '${shipped_date}', '${ship_via}', '${frieght}', '${ship_name}', '${ship_address}', '${ship_city}', '${ship_region}', '${ship_postal_code}', '${ship_country}');
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14);
     INSERT INTO
       order_details (order_id, product_id, unit_price, quantity, discount)
-    VALUES (${newOrderId}, ${product_id}, ${unit_price}, ${quantity}, ${discount});
+    VALUES ($15, $16, $17, $18, $19);
     END;`;
+    const databaseQueryValues = [
+      newOrderId,
+      customer_id,
+      employee_id,
+      order_date,
+      required_date,
+      shipped_date,
+      ship_via,
+      frieght,
+      ship_name,
+      ship_address,
+      ship_city,
+      ship_region,
+      ship_postal_code,
+      ship_country,
+      newOrderId,
+      product_id,
+      unit_price,
+      quantity,
+      discount
+    ];
 
-    const data = await client.query(databaseQuery);
+    const data = await client.query(databaseQuery, databaseQueryValues);
     return data;
   } catch (error) {
     throw error;
