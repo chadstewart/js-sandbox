@@ -26,37 +26,37 @@ interface CreateEmployeeMutationArgs {
 
 export const resolvers = {
   Query: {
-    getOrders: (_: any, args: QueryPaginationArgs, context: ResolverContext) => checkResolverPerformance(context, async () => await orders(args.page)).queryData,
-    getOrderDetails: (_: any, args: QueryPaginationArgs, context: ResolverContext) => checkResolverPerformance(context, () => orderDetailsGraphQL(args.page)),
-    getEmployees: (_: any, args: QueryPaginationArgs, context: ResolverContext) => checkResolverPerformance(context, async () => await employees(args.page)).queryData,
-    getCustomers: (_: any, args: QueryPaginationArgs, context: ResolverContext) => checkResolverPerformance(context, async () => await customers(args.page)).queryData,
-    getCustomerDetails: (_: any, args: { id: string }, context: ResolverContext) => checkResolverPerformance(context, () => customerDetails(args.id)),
-    getProducts: (_: any, args: QueryPaginationArgs, context: ResolverContext) => checkResolverPerformance(context, async () => await products(args.page)).queryData,
-    getCategories: (_: any, args: QueryPaginationArgs, context: ResolverContext) => checkResolverPerformance(context, async () => await categories(args.page)).queryData,
-    getSuppliers: (_: any, args: QueryPaginationArgs, context: ResolverContext) => checkResolverPerformance(context, () => supplier(args.page)),
-    getEmployeeTerritories: (_: any, args: QueryPaginationArgs, context: ResolverContext) => checkResolverPerformance(context, async () => await employeeTerritoriesGraphQL(args.page)).queryData
+    getOrders: async (_: any, args: QueryPaginationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => orders(args.page)),
+    getOrderDetails: async (_: any, args: QueryPaginationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => orderDetailsGraphQL(args.page)),
+    getEmployees: async (_: any, args: QueryPaginationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => employees(args.page)),
+    getCustomers: async (_: any, args: QueryPaginationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => customers(args.page)),
+    getCustomerDetails: async (_: any, args: { id: string }, context: ResolverContext) => await checkResolverPerformance(context, () => customerDetails(args.id)),
+    getProducts: async(_: any, args: QueryPaginationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => products(args.page)),
+    getCategories: async (_: any, args: QueryPaginationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => categories(args.page)),
+    getSuppliers: async (_: any, args: QueryPaginationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => supplier(args.page)),
+    getEmployeeTerritories: async (_: any, args: QueryPaginationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => employeeTerritoriesGraphQL(args.page))
   },
   Order: {
-    customer: async (parent: { customer_id: string }, context: ResolverContext) => checkResolverPerformance(context, async () => await customerDetailsGraphQL(parent.customer_id)),
-    employee: async (parent: { employee_id: number }, context: ResolverContext) => checkResolverPerformance(context, async () => await employeesFromIdGraphQL(parent.employee_id))
+    customer: async (parent: { customer_id: string }, context: ResolverContext) => await checkResolverPerformance(context, () => customerDetailsGraphQL(parent.customer_id)),
+    employee: async (parent: { employee_id: number }, context: ResolverContext) => await checkResolverPerformance(context, () => employeesFromIdGraphQL(parent.employee_id))
   },
   OrderDetail: {
-    order: async (parent: { order_id: number }, context: ResolverContext) => checkResolverPerformance(context, async () => await ordersGraphQL(parent.order_id)),
-    product: async (parent: { product_id: number }, context: ResolverContext) => checkResolverPerformance(context, async () => await productDetailsGraphQL(parent.product_id))
+    order: async (parent: { order_id: number }, context: ResolverContext) => await checkResolverPerformance(context, () => ordersGraphQL(parent.order_id)),
+    product: async (parent: { product_id: number }, context: ResolverContext) => await checkResolverPerformance(context, () => productDetailsGraphQL(parent.product_id))
   },
   EmployeeTerritory: {
-    employee: async (parent: { employee_id: number }, context: ResolverContext) => checkResolverPerformance(context, async () => await employeesFromIdGraphQL(parent.employee_id)).queryData,
-    territory: async (parent: { territory_id: number }, context: ResolverContext) => checkResolverPerformance(context, async () => await territoriesGraphQL(parent.territory_id)).queryData
+    employee: async (parent: { employee_id: number }, context: ResolverContext) => await checkResolverPerformance(context, () => employeesFromIdGraphQL(parent.employee_id)),
+    territory: async (parent: { territory_id: number }, context: ResolverContext) => await checkResolverPerformance(context, () => territoriesGraphQL(parent.territory_id))
   },
   Product: {
-    supplier: async (parent: { supplier_id: number }, context: ResolverContext) => checkResolverPerformance(context, async () => await supplierGraphQL(parent.supplier_id)),
-    category: async (parent: { category_id: number }, context: ResolverContext) => checkResolverPerformance(context, async () => await categoriesGraphQL(parent.category_id))
+    supplier: async (parent: { supplier_id: number }, context: ResolverContext) => await checkResolverPerformance(context, () => supplierGraphQL(parent.supplier_id)),
+    category: async (parent: { category_id: number }, context: ResolverContext) => await checkResolverPerformance(context, () => categoriesGraphQL(parent.category_id))
   },
   Territory: {
-    region: async (parent: { region_id: number }, context: ResolverContext) => checkResolverPerformance(context, async () => await regionsGraphQL(parent.region_id))
+    region: async (parent: { region_id: number }, context: ResolverContext) => await checkResolverPerformance(context, () => regionsGraphQL(parent.region_id))
   },
   Mutation: {
-    updateCustomer: async (_: any, args: CustomerMutationArgs, context: ResolverContext) => checkResolverPerformance(context, async () => await updateCustomer(args.id, args.customerUserInput)),
-    createEmployee: async (_: any, args: CreateEmployeeMutationArgs, context: ResolverContext) => checkResolverPerformance(context, async () => await createEmployee(args.createEmployeeInput))
+    updateCustomer: async (_: any, args: CustomerMutationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => updateCustomer(args.id, args.customerUserInput)),
+    createEmployee: async (_: any, args: CreateEmployeeMutationArgs, context: ResolverContext) => await checkResolverPerformance(context, () => createEmployee(args.createEmployeeInput))
   }
 };

@@ -13,12 +13,16 @@ export const testPerformance = (prevTimestamp?: Date) => {
   return currentTime;
 };
 
-export const checkResolverPerformance = (context: ResolverContext, resolverCallback: Function) => {
-  const result = resolverCallback();
+export const checkResolverPerformance = async (context: ResolverContext, resolverCallback: Function) => {
+  const result = await resolverCallback();
   const logObject = {
     ...context.requestBody,
+    result,
     queryTime: `${testPerformance(context.currentTime)} ms`
   };
   logger.info(JSON.stringify(logObject));
+
+  const isQueryDataPresent = result.queryData !== undefined;
+  if(isQueryDataPresent) return result.queryData;
   return result;
 };
