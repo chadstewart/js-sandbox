@@ -4,7 +4,7 @@ import { totalPaginationPages } from "../util/total-pagination-pages";
 import { updateCustomerZodSchema } from "../util/schemas/update-customer-zod-schema";
 
 export const customers = async (page = 1) => {
-  const paginatedQuery = addPagination(page);
+  const { inputtedRowLimit, offsetForQuery } = addPagination(page);
   const databaseQuery =
   `SELECT
       customer_id,
@@ -13,8 +13,9 @@ export const customers = async (page = 1) => {
       contact_title
     FROM
       customers
-    ${paginatedQuery};`;
-  const queryData = await client.query(databaseQuery);
+    LIMIT $1 OFFSET $2;`;
+  const databaseQueryValues = [inputtedRowLimit, offsetForQuery];
+  const queryData = await client.query(databaseQuery, databaseQueryValues);
   const totalPages = await totalPaginationPages("product_id", "products");
   const data = {
     ...queryData,
@@ -38,8 +39,8 @@ export const customerDetails = async (customerId: string) => {
     LEFT JOIN
       customer_demographics on customer_customer_demo.customer_type_id=customer_demographics.customer_type_id
     WHERE
-      customers.customer_id='${customerId}';`;
-  const queryData = await client.query(databaseQuery);
+      customers.customer_id=$1;`;
+  const queryData = await client.query(databaseQuery, [customerId]);
   return queryData;
 };
 
@@ -64,18 +65,30 @@ export const updateCustomer = async (customerId: string, reqBody: any) => {
     `UPDATE
       customers
     SET
-      contact_name='${contact_name}',
-      contact_title='${contact_title}',
-      address='${address}',
-      city='${city}',
-      region='${region}',
-      postal_code='${postal_code}',
-      country='${country}',
-      phone='${phone}',
-      fax='${fax}'
+      contact_name=$1,
+      contact_title=$2,
+      address=$3,
+      city=$4,
+      region=$5,
+      postal_code=$6,
+      country=$7,
+      phone=$8,
+      fax=$9
     WHERE
-      customer_id='${customerId}';`;
-    return await client.query(databaseQuery);
+      customer_id=$10;`;
+    const databaseQueryValues = [
+      contact_name,
+      contact_title,
+      address,
+      city,
+      region,
+      postal_code,
+      country,
+      phone,
+      fax,
+      customerId
+    ];
+    return await client.query(databaseQuery, databaseQueryValues);
   } catch (error) {
     console.log(error);
     throw error;
