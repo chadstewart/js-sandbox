@@ -4,7 +4,7 @@ import { createEmployeeZodSchema } from "../util/schemas/employee-zod-schema";
 import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const employees = async (page = 1) => {
-  const paginatedQuery = addPagination(page);
+  const { inputtedRowLimit, offsetForQuery } = addPagination(page);
   const databaseQuery =
   `Select
       employee_id,
@@ -15,8 +15,9 @@ export const employees = async (page = 1) => {
       photo
     From
       employees
-    ${paginatedQuery};`;
-  const queryData = await client.query(databaseQuery);
+    LIMIT $1 OFFSET $2;`;
+  const databaseQueryValues = [inputtedRowLimit, offsetForQuery];
+  const queryData = await client.query(databaseQuery, databaseQueryValues);
   const totalPages = await totalPaginationPages("employee_id", "employees");
   const data = {
     ...queryData,
@@ -65,12 +66,33 @@ export const createEmployee = async (reqBody: any) => {
     `BEGIN;
     INSERT INTO
       employees (employee_id, last_name, first_name, title, title_of_courtesy, birth_date, hire_date, address, city, region, postal_code, country, home_phone, extension, photo, notes, reports_to, photo_path)
-    VALUES (${employeeIdToAdd}, '${last_name}', '${first_name}', '${title}', '${title_of_courtesy}', '${birth_date}', '${hire_date}', '${address}', '${city}', '${region}', ${postal_code}, '${country}', '${home_phone}', '${extension}', '${photo}', '${notes}', ${reports_to}, '${photo_path}');
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18);
     INSERT INTO
       employee_territories (employee_id, territory_id)
-    VALUES (${employeeIdToAdd}, ${territory_id});
+    VALUES ($19, $20);
     END;`;
-    const queryData = await client.query(databaseQuery);
+    const databaseQueryValues = [
+      last_name,
+      first_name,
+      title,
+      title_of_courtesy,
+      birth_date,
+      hire_date,
+      address,
+      city,
+      region,
+      postal_code,
+      country,
+      home_phone,
+      extension,
+      photo,
+      notes,
+      reports_to,
+      photo_path,
+      employeeIdToAdd,
+      territory_id
+    ];
+    const queryData = await client.query(databaseQuery, databaseQueryValues);
     return queryData;
   } catch (error) {
     throw error;
