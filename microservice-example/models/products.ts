@@ -3,7 +3,7 @@ import { addPagination } from "../util/pagination-helper";
 import { totalPaginationPages } from "../util/total-pagination-pages";
 
 export const products = async (page = 1) => {
-  const paginatedQuery = addPagination(page);
+  const { inputtedRowLimit, offsetForQuery } = addPagination(page);
   const databaseQuery =
   `SELECT
       product_id,
@@ -14,8 +14,9 @@ export const products = async (page = 1) => {
       discontinued
     FROM
       products
-    ${paginatedQuery};`;
-  const queryData = await client.query(databaseQuery);
+    LIMIT $1 OFFSET $2;`;
+  const databaseQueryValues = [inputtedRowLimit, offsetForQuery];
+  const queryData = await client.query(databaseQuery, databaseQueryValues);
   const totalPages = await totalPaginationPages("product_id", "products");
   const data = {
     ...queryData,
@@ -45,7 +46,7 @@ export const productDetails = async (productId = 1) => {
     LEFT JOIN
       suppliers on products.supplier_id=suppliers.supplier_id
     WHERE
-      products.product_id='${productId}';`;
-  const queryData = await client.query(databaseQuery);
+      products.product_id=$1;`;
+  const queryData = await client.query(databaseQuery, [productId]);
   return queryData;
 };
