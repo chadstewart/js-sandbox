@@ -1,0 +1,14 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/typescript-node",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bradlc.vscode-tailwindcss",
+        "vitest.explorer",
+        "YoavBls.pretty-ts-errors"
+      ]
+    }
+  },
+  "forwardPorts": [3000]
+}
